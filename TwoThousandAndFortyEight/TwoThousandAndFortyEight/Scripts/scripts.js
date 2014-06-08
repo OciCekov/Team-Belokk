@@ -12,39 +12,42 @@ var RECT_HEIGHT = 105;
 
 //functions
 
-function valueToColor(val)
-{
+function valueToColor(val) {
     return "#000000";
 }
 
 function createBox(bx, by, bwidth, bheight, fillc, bval) {
 
-    var result = {};
-    if (bval === undefined)
-    {
-        bval = "";
+    var rectangle = new Kinetic.Rect({
+        name: 'rect',
+        value: bval,
+        cornerRadius: 5,
+        x: bx,
+        y: by,
+        width: bwidth,
+        height: bheight,
+        fill: fillc
+    });
+
+    if (bval === undefined) {
+        return rectangle;
     }
+
     return {
-        "rect":new Kinetic.Rect({
-            name: 'rect',
-            value: bval,
-            cornerRadius: 5,
+        rect: rectangle,
+        text: new Kinetic.Text({
             x: bx,
-            y: by,
+            y: by + 33,
             width: bwidth,
             height: bheight,
-            fill: fillc
-        }),"text":new Kinetic.Text({
-            x: bx,
-            y: by+33,
-            width: bwidth,
-            height: bheight,
-            align: "center",            
+            align: "center",
             text: bval,
-            fontSize:45,
+            fontSize: 45,
             fill: valueToColor(bval)
         })
     };
+
+    return result;
 }
 
 function createGrid() {
@@ -89,7 +92,7 @@ var grid = createGrid();
 //add background layer
 var backgroundBox = createBox(0, 0, STAGE_WIDTH, STAGE_HEIGHT, "#BBBBBB");
 var backgroundLayer = new Kinetic.Layer();
-backgroundLayer.add(backgroundBox.rect);
+backgroundLayer.add(backgroundBox);
 
 var columns = (STAGE_WIDTH / RECT_WIDTH) | 0;
 var rows = (STAGE_HEIGHT / RECT_HEIGHT) | 0;
@@ -98,7 +101,7 @@ for (col = 0; col < columns; col++) {
         var cx = 16 * (col + 1) + col * RECT_WIDTH;
         var cy = 16 * (row + 1) + row * RECT_HEIGHT;
         var grayedBox = createBox(cx, cy, RECT_WIDTH, RECT_HEIGHT, "#999999");
-        backgroundLayer.add(grayedBox.rect);
+        backgroundLayer.add(grayedBox);
     }
 }
 
@@ -113,8 +116,8 @@ for (var j = 0; j < 2; j++) {
     //alert(randCell);
     var gRow = grid[randCell].row;
     var gCol = grid[randCell].col;
-    var value=2;
-    grid[randCell]=value;
+    var value = 2;
+    grid[randCell] = value;
     var bx = 16 * (gCol + 1) + gCol * RECT_WIDTH;
     var by = 16 * (gRow + 1) + gRow * RECT_HEIGHT;
     var box = createBox(bx, by, RECT_WIDTH, RECT_HEIGHT, "#DDDDDD", value);
@@ -141,6 +144,10 @@ function gameLoop() {
 
 function checkGameStatus() {
     return true;
+}
+
+function move(where) {
+
 }
 
 //add layer
