@@ -10,6 +10,10 @@ var STAGE_HEIGHT = 500;
 var RECT_WIDTH = 105;
 var RECT_HEIGHT = 105;
 
+var BG_COLOR = "#BBBBBB";
+var BG_BOX_COLOR="#999999";
+var ACTIVE_BOX_COLOR = "#DDDDDD";
+
 //functions
 
 function valueToColor(val) {
@@ -90,7 +94,7 @@ var stage = new Kinetic.Stage({
 var grid = createGrid();
 
 //add background layer
-var backgroundBox = createBox(0, 0, STAGE_WIDTH, STAGE_HEIGHT, "#BBBBBB");
+var backgroundBox = createBox(0, 0, STAGE_WIDTH, STAGE_HEIGHT, BG_COLOR);
 var backgroundLayer = new Kinetic.Layer();
 backgroundLayer.add(backgroundBox);
 
@@ -100,8 +104,8 @@ for (col = 0; col < columns; col++) {
     for (row = 0; row < rows; row++) {
         var cx = 16 * (col + 1) + col * RECT_WIDTH;
         var cy = 16 * (row + 1) + row * RECT_HEIGHT;
-        var grayedBox = createBox(cx, cy, RECT_WIDTH, RECT_HEIGHT, "#999999");
-        backgroundLayer.add(grayedBox);
+        var backgroundSBox = createBox(cx, cy, RECT_WIDTH, RECT_HEIGHT, BG_BOX_COLOR);
+        backgroundLayer.add(backgroundSBox);
     }
 }
 
@@ -120,7 +124,7 @@ for (var j = 0; j < 2; j++) {
     grid[randCell].value = value;
     var bx = 16 * (gCol + 1) + gCol * RECT_WIDTH;
     var by = 16 * (gRow + 1) + gRow * RECT_HEIGHT;
-    var box = createBox(bx, by, RECT_WIDTH, RECT_HEIGHT, "#DDDDDD", value);
+    var box = createBox(bx, by, RECT_WIDTH, RECT_HEIGHT, ACTIVE_BOX_COLOR, value);
 
     gameLayer.add(box.rect);
     gameLayer.add(box.text);
