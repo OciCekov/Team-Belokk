@@ -11,8 +11,10 @@ var RECT_WIDTH = 105;
 var RECT_HEIGHT = 105;
 
 var BG_COLOR = "#BBBBBB";
-var BG_BOX_COLOR="#999999";
+var BG_BOX_COLOR = "#999999";
 var ACTIVE_BOX_COLOR = "#DDDDDD";
+
+var ANIMATION_STEP_IN_PIXELS = 40;
 
 //functions
 
@@ -132,11 +134,12 @@ for (var j = 0; j < 2; j++) {
 stage.add(gameLayer);
 
 //start game loop
-var gameInterval = self.setInterval(function () { gameLoop() }, 70);
+var gameInterval = self.setInterval(function () { gameLoop() }, 16);
+
 
 function gameLoop() {
     if (checkGameStatus()) {
-        //move(where);
+        moveBoxesUpward();
     }
     else {
         clearInterval(gameInterval);//Stop calling gameLoop()
@@ -144,15 +147,38 @@ function gameLoop() {
     }
 }
 
-
-
 function checkGameStatus() {
     return true;
 }
 
-function move(where) {
 
+function moveBoxesUpward() {
+
+    var anim = new Kinetic.Animation(function (frame) {
+        for (var i = 0; i < gameLayer.children.length - 1; i += 2) {
+
+            //SOME DIFFERENT LOGIC HERE. SOMETHING TO DO WITH THE GAME LOGIC
+            var boxObj = gameLayer.children[i];
+            var textObj = gameLayer.children[i+1];
+            if (boxObj.attrs.y > 16 + ANIMATION_STEP_IN_PIXELS) {
+                boxObj.attrs.y -= ANIMATION_STEP_IN_PIXELS;
+                textObj.attrs.y -= ANIMATION_STEP_IN_PIXELS;
+            }
+            else
+            {
+                boxObj.attrs.y = 16;
+                textObj.attrs.y = 49;
+            }
+        }
+    }, gameLayer);
+
+    anim.start();
+    anim.stop();
 }
+
+/*function move(where) {
+
+}*/
 
 //add layer
 /*var layer = new Kinetic.Layer();
