@@ -1,6 +1,25 @@
 ﻿function MainLogic(fieldSizeX, fieldSizeY) {
     self = this;
-    //Test comment asldfjlasdf
+
+    self._initScore = function () {
+        var startingScore = 0;
+        //createScoreTimer(); // Visual score holder.
+        return startingScore;
+    }
+
+    self.score = self._initScore();
+
+    self._addScore = function (value) {
+        self.score += value;
+    }
+
+    self._givePoints = function (tileWeight, multiplier) {
+        multiplier = typeof multiplier !== 'undefined' ? multiplier : 1;
+
+        var result = (1 << (tileWeight + 1)) * multiplier;
+        self._addScore(result);
+    }
+
     self._createMatrix = function (sizeX, sizeY) {
         var resultMatrix = new Array(sizeY);
         for (var i = 0; i < resultMatrix.length; i++) {
@@ -72,6 +91,7 @@
                     if (self.matrix[row][col] == self.matrix[row][prevEqualElementCol]) {
                         self._setResultElement(move, "second", row, prevEqualElementCol);
 
+                        self._givePoints(self.matrix[row][col]);
                         self.matrix[row][col]++;
                         self.matrix[row][prevEqualElementCol] = 0;
                         isMerge = true;
@@ -136,6 +156,7 @@
                     if (self.matrix[row][col] == self.matrix[row][prevEqualElementCol]) {
                         self._setResultElement(move, "second", row, prevEqualElementCol);
 
+                        self._givePoints(self.matrix[row][col]);
                         self.matrix[row][col]++;
                         self.matrix[row][prevEqualElementCol] = 0;
                         isMerge = true;
@@ -200,6 +221,7 @@
                     if (self.matrix[row][col] == self.matrix[prevEqualElementRow][col]) {
                         self._setResultElement(move, "second", prevEqualElementRow, col);
 
+                        self._givePoints(self.matrix[row][col]);
                         self.matrix[row][col]++;
                         self.matrix[prevEqualElementRow][col] = 0;
                         isMerge = true;
@@ -264,6 +286,7 @@
                     if (self.matrix[row][col] == self.matrix[prevEqualElementRow][col]) {
                         self._setResultElement(move, "second", prevEqualElementRow, col);
 
+                        self._givePoints(self.matrix[row][col]);
                         self.matrix[row][col]++;
                         self.matrix[prevEqualElementRow][col] = 0;
                         isMerge = true;
@@ -302,12 +325,33 @@
     };
 }
 
+//var test = new MainLogic(4, 4);
+//test.reset();  //expected 0 at all elements 
+//test.setElement(0, 0); //expected 1 at (0,0) 
+//test.setElement(0, 1); //expected 1 at (0,1) 
+//test.setElement(0, 2); //expected 1 at (0,2) 
+//test.setElement(0, 3); //expected 1 at (0,2)
+//test._givePoints(3); // test this must be private.
+
+//test.setElement(0, 3); //expected 1 at (0,3) 
+//console.log(test.matrix);
+//test.moveLeft(); //expected 2 at (0,0) and (0,1)
+//test.moveLeft(); //expected 3 at (0,0)
+//test.moveRight(); //expected 3 at (0,3)
+//test.moveDown(); //expected 3 at (3,3)
+//test.moveLeft(); //expected 3 at (3,0)
+//test.moveUp(); //expected 3 at (0,0)
+
+
 var test = new MainLogic(4, 4);
 test.reset();  //expected 0 at all elements 
-test.setElement(0, 1);
-test.setElement(0, 2);
-test.setElement(0, 3); // 0 1 1 1 on first row
-var res = test.moveLeft(); // 2 1 0 0 on first row after move
-// elements with columns 1 and 2, merge to position with column 0 value 2
-// element with column 3 moves to position with column 1
-// res contains the 2 transitions that should be animated
+test.setElement(0, 0); //expected 1 at (0,0) 
+test.setElement(0, 1); //expected 1 at (0,1) 
+test.setElement(0, 2); //expected 1 at (0,2) 
+test.setElement(0, 3); //expected 1 at (0,2)
+console.log(test.score); //
+test.moveLeft(); // Test merg 2 cells in the same time 
+console.log(test.score); // 2 + 2 | 2 + 2 = score 4 + 4 = 8
+test.moveLeft(); // Test merg 4 cells in the same time 
+console.log(test.score); // expected 8 + 8 = 16
+test.moveLeft(); // 
