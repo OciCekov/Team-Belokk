@@ -1,6 +1,6 @@
 ﻿function MainLogic(fieldSizeX, fieldSizeY) {
     self = this;
-
+    //Test comment asldfjlasdf
     self._createMatrix = function (sizeX, sizeY) {
         var resultMatrix = new Array(sizeY);
         for (var i = 0; i < resultMatrix.length; i++) {
