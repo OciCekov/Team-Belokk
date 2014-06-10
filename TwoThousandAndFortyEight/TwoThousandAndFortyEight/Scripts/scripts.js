@@ -207,7 +207,7 @@ function moveBoxesUpward(moves) {
         }
         
     }, gameLayer);
-
+	
     anim.start();
     anim.stop();
 }
