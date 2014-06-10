@@ -84,7 +84,6 @@
         move[element].value = self.matrix[row][col];
     }
 
-    // TODO: return array with objects representing the moves that are made
     self.moveRight = function () {
         var result = [];
         for (var row = 0; row < self.matrix.length; row++) {
@@ -149,7 +148,6 @@
         return result;
     };
 
-    // TODO: return array with objects representing the moves that are made
     self.moveLeft = function () {
         var result = [];
         for (var row = 0; row < self.matrix.length; row++) {
@@ -214,7 +212,6 @@
         return result;
     };
 
-    // TODO: return array with objects representing the moves that are made
     self.moveUp = function () {
         var result = [];
         for (var col = 0; col < self.matrix[0].length; col++) {
@@ -231,6 +228,9 @@
                     var prevEqualElementRow = row + 1;
                     while (prevEqualElementRow <= self.matrix.length - 1) {
                         if (self.matrix[row][prevEqualElementRow] === 0) {
+                            if (prevEqualElementRow + 1 >= self.matrix.length) {
+                                break;
+                            }
                             prevEqualElementRow++;
                             continue;
                         } else {
@@ -279,7 +279,6 @@
         return result;
     };
 
-    // TODO: return array with objects representing the moves that are made
     self.moveDown = function () {
         var result = [];
         for (var col = 0; col < self.matrix[0].length; col++) {

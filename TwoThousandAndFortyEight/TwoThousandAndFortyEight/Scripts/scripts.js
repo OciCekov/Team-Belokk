@@ -131,6 +131,10 @@ stage.add(backgroundLayer);
 //init
 var gameLayer = new Kinetic.Layer();
 
+//init main logic
+var logic = new MainLogic(4, 4);
+logic.reset();
+
 for (var j = 0; j < 2; j++) {
 
     var randCell = randomCell(grid);
@@ -142,19 +146,25 @@ for (var j = 0; j < 2; j++) {
     var bx = 16 * (gCol + 1) + gCol * RECT_WIDTH;
     var by = 16 * (gRow + 1) + gRow * RECT_HEIGHT;
     var box = createBox(bx, by, RECT_WIDTH, RECT_HEIGHT, valueToColor(value), value);
+    box.rect.id = randCell;
+    box.text.id = randCell;
 
     gameLayer.add(box.rect);
     gameLayer.add(box.text);
+
+    logic.setElement(gRow, gCol, 1);
 }
 stage.add(gameLayer);
 
-//start game loop
-var gameInterval = self.setInterval(function () { gameLoop() }, 16);
 
+//start game loop
+var gameInterval = setInterval(function () { gameLoop() }, 1000);
+
+var moves = logic.moveUp();
 
 function gameLoop() {
     if (checkGameStatus()) {
-        moveBoxesUpward();
+        moveBoxesUpward(moves);
     }
     else {
         clearInterval(gameInterval);//Stop calling gameLoop()
@@ -166,25 +176,36 @@ function checkGameStatus() {
     return true;
 }
 
-
-function moveBoxesUpward() {
+function moveBoxesUpward(moves) {
+    if (!moves) return;
 
     var anim = new Kinetic.Animation(function (frame) {
-        for (var i = 0; i < gameLayer.children.length - 1; i += 2) {
+        for (var i = 0; i < moves.length; i++) {
+            for (var j = 0; j < gameLayer.children.length - 1; j += 2) {
 
-            //SOME DIFFERENT LOGIC HERE. SOMETHING TO DO WITH THE GAME LOGIC
-            var boxObj = gameLayer.children[i];
-            var textObj = gameLayer.children[i+1];
-            if (boxObj.attrs.y > 16 + ANIMATION_STEP_IN_PIXELS) {
-                boxObj.attrs.y -= ANIMATION_STEP_IN_PIXELS;
-                textObj.attrs.y -= ANIMATION_STEP_IN_PIXELS;
-            }
-            else
-            {
-                boxObj.attrs.y = 16;
-                textObj.attrs.y = 49;
+                // find element to move
+                var boxObj = gameLayer.children[j];
+                var textObj = gameLayer.children[j + 1];
+                boxId = boxObj.id;
+                if (moves[i].first.row == grid[boxId].row &&
+                    moves[i].first.col == grid[boxId].col) {
+                    boxObj.attrs.y = (16 * (moves[i].result.row + 1)) + (moves[i].result.row * RECT_HEIGHT)
+                    textObj.attrs.y = boxObj.attrs.y + 33;
+                }
+                
+                //var boxObj = gameLayer.children[i];
+                //var textObj = gameLayer.children[i + 1];
+                //if (boxObj.attrs.y > 16 + ANIMATION_STEP_IN_PIXELS) {
+                //    boxObj.attrs.y -= ANIMATION_STEP_IN_PIXELS;
+                //    textObj.attrs.y -= ANIMATION_STEP_IN_PIXELS;
+                //}
+                //else {
+                //    boxObj.attrs.y = 16;
+                //    textObj.attrs.y = 49;
+                //}
             }
         }
+        
     }, gameLayer);
 
     anim.start();
