@@ -10,16 +10,29 @@ var STAGE_HEIGHT = 500;
 var RECT_WIDTH = 105;
 var RECT_HEIGHT = 105;
 
-var BG_COLOR = "#BBBBBB";
-var BG_BOX_COLOR = "#999999";
-var ACTIVE_BOX_COLOR = "#DDDDDD";
+var BG_COLOR = "#2D4559";
+var BG_BOX_COLOR = "576A7A";
+var ACTIVE_BOX_COLOR = "#000000";
+var ACTIVE_FONT_COLOR = "#FFFFFF";
 
 var ANIMATION_STEP_IN_PIXELS = 40;
 
 //functions
 
 function valueToColor(val) {
-    return "#000000";
+    switch (val){
+        case 2: return "#9EBCD9";
+        case 4: return "#6E9BC6";
+        case 8: return "#3D79B3";
+        case 16: return "42AC92";
+        case 32: return "32816E";
+        case 64: return "215649";
+        case 128: return "F8A884";
+        case 256: return "FF9366";
+        case 512: return "E67373";
+        case 1024: return "FFC988";
+        case 2048: return "FFD685";
+    }
 }
 
 function createBox(bx, by, bwidth, bheight, fillc, bval) {
@@ -48,8 +61,10 @@ function createBox(bx, by, bwidth, bheight, fillc, bval) {
             height: bheight,
             align: "center",
             text: bval,
-            fontSize: 45,
-            fill: valueToColor(bval)
+            fontSize: 48,
+            fontFamily: "Clear Sans",
+            fontStyle: "bold",
+            fill: ACTIVE_FONT_COLOR
         })
     };
 
@@ -126,7 +141,7 @@ for (var j = 0; j < 2; j++) {
     grid[randCell].value = value;
     var bx = 16 * (gCol + 1) + gCol * RECT_WIDTH;
     var by = 16 * (gRow + 1) + gRow * RECT_HEIGHT;
-    var box = createBox(bx, by, RECT_WIDTH, RECT_HEIGHT, ACTIVE_BOX_COLOR, value);
+    var box = createBox(bx, by, RECT_WIDTH, RECT_HEIGHT, valueToColor(value), value);
 
     gameLayer.add(box.rect);
     gameLayer.add(box.text);
