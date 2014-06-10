@@ -29,6 +29,24 @@
         return resultMatrix;
     }
 
+    self.hasGameEnded = function () {
+        var gameHasEnded = true;
+        for (var i = 0; i < self.matrix.length - 1; i++) {
+            for (var j = 0; j < self.matrix[i].length - 1; j++) {
+                if (self.matrix[i][j] === 0) {
+                    gameHasEnded = false;
+                    return gameHasEnded;
+                } else if (self.matrix[i][j] === self.matrix[i + 1][j]
+                        && self.matrix[i][j] === self.matrix[i][j + 1]) {
+                    gameHasEnded = false;
+                    return gameHasEnded;
+                }             
+            }
+        }
+
+        return gameHasEnded;
+    }
+
     self.matrix = self._createMatrix(fieldSizeX, fieldSizeY);
 
     self.reset = function () {
@@ -53,8 +71,10 @@
         }
     };
 
-    self.setElement = function (elementRow, elementCol) {
-        self.matrix[elementRow][elementCol] = 1;
+    self.setElement = function (elementRow, elementCol, value) {
+        value = typeof value !== 'undefined' ? value : 1;
+
+        self.matrix[elementRow][elementCol] = value;
     }
 
     self._setResultElement = function (move, element, row, col) {
@@ -343,15 +363,44 @@
 //test.moveUp(); //expected 3 at (0,0)
 
 
+//var test = new MainLogic(4, 4);
+//test.reset();  //expected 0 at all elements 
+//test.setElement(0, 0); //expected 1 at (0,0) 
+//test.setElement(0, 1); //expected 1 at (0,1) 
+//test.setElement(0, 2); //expected 1 at (0,2) 
+//test.setElement(0, 3); //expected 1 at (0,2)
+//console.log(test.score); //
+//test.moveLeft(); // Test merg 2 cells in the same time 
+//console.log(test.score); // 2 + 2 | 2 + 2 = score 4 + 4 = 8
+//test.moveLeft(); // Test merg 4 cells in the same time 
+//console.log(test.score); // expected 8 + 8 = 16
+//test.moveLeft(); // 
+//console.log(test.hasGameEnded());
+
+/*
+// No empty fields and can't move.
 var test = new MainLogic(4, 4);
-test.reset();  //expected 0 at all elements 
-test.setElement(0, 0); //expected 1 at (0,0) 
-test.setElement(0, 1); //expected 1 at (0,1) 
-test.setElement(0, 2); //expected 1 at (0,2) 
-test.setElement(0, 3); //expected 1 at (0,2)
-console.log(test.score); //
-test.moveLeft(); // Test merg 2 cells in the same time 
-console.log(test.score); // 2 + 2 | 2 + 2 = score 4 + 4 = 8
-test.moveLeft(); // Test merg 4 cells in the same time 
-console.log(test.score); // expected 8 + 8 = 16
-test.moveLeft(); // 
+test.reset();
+var number = 1;
+for (var i = 0; i < 4; i++) {
+    for (var j = 0; j < 4; j++) {
+        test.setElement(i, j, number);
+        number++;
+    }
+}
+console.log(test.matrix);
+console.log(test.hasGameEnded()); */
+
+/*
+// Test only 1 empty field.
+var test = new MainLogic(4, 4);
+test.reset();
+var number = 0;
+for (var i = 0; i < 4; i++) {
+    for (var j = 0; j < 4; j++) {
+        test.setElement(i, j, number);
+        number++;
+    }
+}
+console.log(test.matrix);
+console.log(test.hasGameEnded());*/
