@@ -344,13 +344,13 @@
     };
 }
 
-var test = new MainLogic(4, 4); // This in visual test doesn't work here it does.
-test.reset();
-console.log(test.matrix);
-test.setElement(1, 1); 
-test.setElement(3, 1); 
-test.moveUp(); 
-console.log(test.matrix);
+//var test = new MainLogic(4, 4); 
+//test.reset();
+//console.log(test.matrix);
+//test.setElement(1, 1); 
+//test.setElement(3, 1); 
+//test.moveUp(); 
+//console.log(test.matrix);
 
 //var test = new MainLogic(4, 4);
 //test.reset();  //expected 0 at all elements 

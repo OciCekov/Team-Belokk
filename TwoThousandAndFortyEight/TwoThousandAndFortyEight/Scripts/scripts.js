@@ -19,6 +19,7 @@ var TEXT_OFFSET = 33;
 var ANIMATION_STEP_IN_PIXELS = 40;
 
 //functions
+var commandCallHeap = [];
 
 function valueToColor(val) {
     switch (val){
@@ -164,13 +165,46 @@ var gameInterval = setInterval(function () { gameLoop() }, 1000);
 var moves = logic.moveUp();
 
 function gameLoop() {
+   
     if (checkGameStatus()) {
-        moveBoxesUpward(moves);
-        //mergeBoxes();
+         
+        while (commandCallHeap.length !== 0) {
+            executeCommand(commandCallHeap[0]);
+            commandCallHeap.splice(0, 1);
+            //console.log(commandCallHeap);
+        }
     }
     else {
         clearInterval(gameInterval);//Stop calling gameLoop()
         alert('Game Over!');
+    }
+}
+
+function executeCommand(command) {
+    switch (command) {
+        case 'UP':
+            moveBoxesUpward(moves);
+            //mergeBoxes();
+        break;
+
+        case 'DOWN':
+            //moveBoxesDownward(moves);
+            //mergeBoxes();
+            break;
+
+        case 'RIGHT':
+            //moveBoxesDownToRight(moves);
+            //mergeBoxes();
+            break;
+
+        case 'LEFT':
+            //moveBoxesDownToLeft(moves);
+            //mergeBoxes();
+            break;
+
+        default:
+            //TODO make exception;
+            break;
     }
 }
 
@@ -189,8 +223,8 @@ function moveBoxesUpward(moves) {
                 var boxObj = gameLayer.children[j];
                 var textObj = gameLayer.children[j + 1];
                 boxId = boxObj.id;
-                if (moves[i].first.row == grid[boxId].row &&
-                        moves[i].first.col == grid[boxId].col) {
+                if (moves[i].first.row === grid[boxId].row &&
+                        moves[i].first.col === grid[boxId].col) {
                     boxObj.attrs.y = (16 * (moves[i].result.row + 1)) + (moves[i].result.row * RECT_HEIGHT)
                     textObj.attrs.y = boxObj.attrs.y + TEXT_OFFSET;
                 }
@@ -225,29 +259,25 @@ function moveBoxesUpward(moves) {
 layer.add(rectangle);
 stage.add(layer);*/
 
-//var rectangle=stage.rect(
-
 //key events
-/*$(document).ready(function () {
-    $(document).keydown(function (e) {
-
-        switch (e.keyCode) {
-
+window.onload = function () {
+    document.addEventListener('keydown', function(event) {
+        switch (event.keyCode) {
             case UP_ARROW:
-                //where = Up_Arrow;
+                commandCallHeap.push('UP');
                 break;
 
             case DOWN_ARROW:
-                where = Down_Arrow;
+                commandCallHeap.push('DOWN');
                 break;
 
             case RIGHT_ARROW:
-                where = Right_Arrow;
+                commandCallHeap.push('RIGHT');
                 break;
 
             case LEFT_ARROW:
-                where = Left_Arrow;
+                commandCallHeap.push('LEFT');
                 break;
         }
-    });
-});*/
+    });  
+}
