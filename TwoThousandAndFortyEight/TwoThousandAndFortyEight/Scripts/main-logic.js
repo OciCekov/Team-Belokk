@@ -227,7 +227,7 @@
                 if (row !== self.matrix.length - 1) {
                     var prevEqualElementRow = row + 1;
                     while (prevEqualElementRow <= self.matrix.length - 1) {
-                        if (self.matrix[row][prevEqualElementRow] === 0) {
+                        if (self.matrix[prevEqualElementRow][col] === 0) {
                             if (prevEqualElementRow + 1 >= self.matrix.length) {
                                 break;
                             }
