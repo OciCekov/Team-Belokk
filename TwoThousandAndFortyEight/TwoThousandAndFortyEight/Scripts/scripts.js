@@ -165,9 +165,7 @@ var gameInterval = setInterval(function () { gameLoop() }, 1000);
 var moves = logic.moveUp();
 
 function gameLoop() {
-   
-    if (checkGameStatus()) {
-         
+    if (!logic.hasGameEnded()) {      
         while (commandCallHeap.length !== 0) {
             executeCommand(commandCallHeap[0]);
             commandCallHeap.splice(0, 1);
@@ -206,10 +204,6 @@ function executeCommand(command) {
             //TODO make exception;
             break;
     }
-}
-
-function checkGameStatus() {
-    return true;
 }
 
 function moveBoxesUpward(moves) {
