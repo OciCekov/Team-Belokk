@@ -14,6 +14,7 @@ var BG_COLOR = "#2D4559";
 var BG_BOX_COLOR = "576A7A";
 var ACTIVE_BOX_COLOR = "#000000";
 var ACTIVE_FONT_COLOR = "#FFFFFF";
+var TEXT_OFFSET = 33;
 
 var ANIMATION_STEP_IN_PIXELS = 40;
 
@@ -56,7 +57,7 @@ function createBox(bx, by, bwidth, bheight, fillc, bval) {
         rect: rectangle,
         text: new Kinetic.Text({
             x: bx,
-            y: by + 33,
+            y: by + TEXT_OFFSET,
             width: bwidth,
             height: bheight,
             align: "center",
@@ -165,6 +166,7 @@ var moves = logic.moveUp();
 function gameLoop() {
     if (checkGameStatus()) {
         moveBoxesUpward(moves);
+        //mergeBoxes();
     }
     else {
         clearInterval(gameInterval);//Stop calling gameLoop()
@@ -188,9 +190,9 @@ function moveBoxesUpward(moves) {
                 var textObj = gameLayer.children[j + 1];
                 boxId = boxObj.id;
                 if (moves[i].first.row == grid[boxId].row &&
-                    moves[i].first.col == grid[boxId].col) {
+                        moves[i].first.col == grid[boxId].col) {
                     boxObj.attrs.y = (16 * (moves[i].result.row + 1)) + (moves[i].result.row * RECT_HEIGHT)
-                    textObj.attrs.y = boxObj.attrs.y + 33;
+                    textObj.attrs.y = boxObj.attrs.y + TEXT_OFFSET;
                 }
                 
                 //var boxObj = gameLayer.children[i];
@@ -210,6 +212,8 @@ function moveBoxesUpward(moves) {
 
     anim.start();
     anim.stop();
+
+    //mergeBoxes();
 }
 
 /*function move(where) {
