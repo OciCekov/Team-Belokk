@@ -88,7 +88,7 @@
         var result = [];
         for (var row = 0; row < self.matrix.length; row++) {
             for (var col = self.matrix[row].length - 1; col >= 0 ; col--) {
-                if (self.matrix[row][col] == 0) {
+                if (self.matrix[row][col] === 0) {
                     continue;
                 }
 
@@ -107,7 +107,7 @@
                         }
                     }
                     // merge two adjacent elements if they are equal
-                    if (self.matrix[row][col] == self.matrix[row][prevEqualElementCol]) {
+                    if (self.matrix[row][col] === self.matrix[row][prevEqualElementCol]) {
                         self._setResultElement(move, "second", row, prevEqualElementCol);
 
                         self._givePoints(self.matrix[row][col]);
@@ -152,7 +152,7 @@
         var result = [];
         for (var row = 0; row < self.matrix.length; row++) {
             for (var col = 0; col <= self.matrix[row].length - 1; col++) {
-                if (self.matrix[row][col] == 0) {
+                if (self.matrix[row][col] === 0) {
                     continue;
                 }
 
@@ -171,7 +171,7 @@
                         }
                     }
                     // merge two adjacent elements if they are equal
-                    if (self.matrix[row][col] == self.matrix[row][prevEqualElementCol]) {
+                    if (self.matrix[row][col] === self.matrix[row][prevEqualElementCol]) {
                         self._setResultElement(move, "second", row, prevEqualElementCol);
 
                         self._givePoints(self.matrix[row][col]);
@@ -216,7 +216,7 @@
         var result = [];
         for (var col = 0; col < self.matrix[0].length; col++) {
             for (var row = 0; row <= self.matrix.length - 1; row++) {
-                if (self.matrix[row][col] == 0) {
+                if (self.matrix[row][col] === 0) {
                     continue;
                 }
 
@@ -227,7 +227,7 @@
                 if (row !== self.matrix.length - 1) {
                     var prevEqualElementRow = row + 1;
                     while (prevEqualElementRow <= self.matrix.length - 1) {
-                        if (self.matrix[row][prevEqualElementRow] === 0) {
+                        if (self.matrix[prevEqualElementRow][col] === 0) {
                             if (prevEqualElementRow + 1 >= self.matrix.length) {
                                 break;
                             }
@@ -238,7 +238,7 @@
                         }
                     }
                     // merge two adjacent elements if they are equal
-                    if (self.matrix[row][col] == self.matrix[prevEqualElementRow][col]) {
+                    if (self.matrix[row][col] === self.matrix[prevEqualElementRow][col]) {
                         self._setResultElement(move, "second", prevEqualElementRow, col);
 
                         self._givePoints(self.matrix[row][col]);
@@ -283,7 +283,7 @@
         var result = [];
         for (var col = 0; col < self.matrix[0].length; col++) {
             for (var row = self.matrix.length - 1; row >= 0 ; row--) {
-                if (self.matrix[row][col] == 0) {
+                if (self.matrix[row][col] === 0) {
                     continue;
                 }
 
@@ -302,7 +302,7 @@
                         }
                     }
                     // merge two adjacent elements if they are equal
-                    if (self.matrix[row][col] == self.matrix[prevEqualElementRow][col]) {
+                    if (self.matrix[row][col] === self.matrix[prevEqualElementRow][col]) {
                         self._setResultElement(move, "second", prevEqualElementRow, col);
 
                         self._givePoints(self.matrix[row][col]);
@@ -343,6 +343,14 @@
         return result;
     };
 }
+
+//var test = new MainLogic(4, 4); 
+//test.reset();
+//console.log(test.matrix);
+//test.setElement(1, 1); 
+//test.setElement(3, 1); 
+//test.moveUp(); 
+//console.log(test.matrix);
 
 //var test = new MainLogic(4, 4);
 //test.reset();  //expected 0 at all elements 

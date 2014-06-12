@@ -14,25 +14,26 @@ var BG_COLOR = "#2D4559";
 var BG_BOX_COLOR = "576A7A";
 var ACTIVE_BOX_COLOR = "#000000";
 var ACTIVE_FONT_COLOR = "#FFFFFF";
+var TEXT_OFFSET = 33;
 
 var ANIMATION_STEP_IN_PIXELS = 40;
 
 //functions
+var commandCallHeap = [];
 
 function valueToColor(val) {
     switch (val){
         case 2: return "#9EBCD9";
         case 4: return "#6E9BC6";
         case 8: return "#3D79B3";
-        case 16: return "#42AC92";
-        case 32: return "#32816E";
-        case 64: return "#215649";
-        case 128: return "#F8A884";
-        case 256: return "#FF9366";
-        case 512: return "#E67373";
-        case 1024: return "#FFC988";
-        case 2048: return "#FFD685";
-        default: return "#FFE6B6";
+        case 16: return "42AC92";
+        case 32: return "32816E";
+        case 64: return "215649";
+        case 128: return "F8A884";
+        case 256: return "FF9366";
+        case 512: return "E67373";
+        case 1024: return "FFC988";
+        case 2048: return "FFD685";
     }
 }
 
@@ -57,7 +58,7 @@ function createBox(bx, by, bwidth, bheight, fillc, bval) {
         rect: rectangle,
         text: new Kinetic.Text({
             x: bx,
-            y: by + 33,
+            y: by + TEXT_OFFSET,
             width: bwidth,
             height: bheight,
             align: "center",
@@ -164,8 +165,12 @@ var gameInterval = setInterval(function () { gameLoop() }, 1000);
 var moves = logic.moveUp();
 
 function gameLoop() {
-    if (checkGameStatus()) {
-        moveBoxesUpward(moves);
+    if (!logic.hasGameEnded()) {      
+        while (commandCallHeap.length !== 0) {
+            executeCommand(commandCallHeap[0]);
+            commandCallHeap.splice(0, 1);
+            //console.log(commandCallHeap);
+        }
     }
     else {
         clearInterval(gameInterval);//Stop calling gameLoop()
@@ -173,8 +178,32 @@ function gameLoop() {
     }
 }
 
-function checkGameStatus() {
-    return true;
+function executeCommand(command) {
+    switch (command) {
+        case 'UP':
+            moveBoxesUpward(moves);
+            //mergeBoxes();
+        break;
+
+        case 'DOWN':
+            //moveBoxesDownward(moves);
+            //mergeBoxes();
+            break;
+
+        case 'RIGHT':
+            //moveBoxesDownToRight(moves);
+            //mergeBoxes();
+            break;
+
+        case 'LEFT':
+            //moveBoxesDownToLeft(moves);
+            //mergeBoxes();
+            break;
+
+        default:
+            //TODO make exception;
+            break;
+    }
 }
 
 function moveBoxesUpward(moves) {
@@ -188,10 +217,10 @@ function moveBoxesUpward(moves) {
                 var boxObj = gameLayer.children[j];
                 var textObj = gameLayer.children[j + 1];
                 boxId = boxObj.id;
-                if (moves[i].first.row == grid[boxId].row &&
-                    moves[i].first.col == grid[boxId].col) {
+                if (moves[i].first.row === grid[boxId].row &&
+                        moves[i].first.col === grid[boxId].col) {
                     boxObj.attrs.y = (16 * (moves[i].result.row + 1)) + (moves[i].result.row * RECT_HEIGHT)
-                    textObj.attrs.y = boxObj.attrs.y + 33;
+                    textObj.attrs.y = boxObj.attrs.y + TEXT_OFFSET;
                 }
                 
                 //var boxObj = gameLayer.children[i];
@@ -211,6 +240,8 @@ function moveBoxesUpward(moves) {
 
     anim.start();
     anim.stop();
+
+    //mergeBoxes();
 }
 
 /*function move(where) {
@@ -222,29 +253,25 @@ function moveBoxesUpward(moves) {
 layer.add(rectangle);
 stage.add(layer);*/
 
-//var rectangle=stage.rect(
-
 //key events
-/*$(document).ready(function () {
-    $(document).keydown(function (e) {
-
-        switch (e.keyCode) {
-
+window.onload = function () {
+    document.addEventListener('keydown', function(event) {
+        switch (event.keyCode) {
             case UP_ARROW:
-                //where = Up_Arrow;
+                commandCallHeap.push('UP');
                 break;
 
             case DOWN_ARROW:
-                where = Down_Arrow;
+                commandCallHeap.push('DOWN');
                 break;
 
             case RIGHT_ARROW:
-                where = Right_Arrow;
+                commandCallHeap.push('RIGHT');
                 break;
 
             case LEFT_ARROW:
-                where = Left_Arrow;
+                commandCallHeap.push('LEFT');
                 break;
         }
-    });
-});*/
+    });  
+}
