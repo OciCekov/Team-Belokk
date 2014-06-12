@@ -24,14 +24,15 @@ function valueToColor(val) {
         case 2: return "#9EBCD9";
         case 4: return "#6E9BC6";
         case 8: return "#3D79B3";
-        case 16: return "42AC92";
-        case 32: return "32816E";
-        case 64: return "215649";
-        case 128: return "F8A884";
-        case 256: return "FF9366";
-        case 512: return "E67373";
-        case 1024: return "FFC988";
-        case 2048: return "FFD685";
+        case 16: return "#42AC92";
+        case 32: return "#32816E";
+        case 64: return "#215649";
+        case 128: return "#F8A884";
+        case 256: return "#FF9366";
+        case 512: return "#E67373";
+        case 1024: return "#FFC988";
+        case 2048: return "#FFD685";
+        default: return "#FFE6B6";
     }
 }
 
