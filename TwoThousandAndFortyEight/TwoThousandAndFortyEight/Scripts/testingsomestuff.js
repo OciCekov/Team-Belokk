@@ -171,11 +171,11 @@ stage.add(gameLayer);
 
 
 //start game loop
-var gameInterval = setInterval(function () { gameLoop() }, 1000);
+//var gameInterval = setInterval(function () { gameLoop() }, 1000);
 
 //var moves = logic.moveUp();
 
-function gameLoop() {
+/*function gameLoop() {
     if (checkGameStatus()) {
         //moveBoxesUpward(moves);
     }
@@ -183,12 +183,12 @@ function gameLoop() {
         clearInterval(gameInterval);//Stop calling gameLoop()
         alert('Game Over!');
     }
-}
+}*/
 
-function checkGameStatus() {
+/*function checkGameStatus() {
     return true;
 }
-
+*/
 /*
 function moveBoxesUpward(moves) {
     if (!moves) return;
@@ -331,9 +331,9 @@ function sortRow(row, dir) {
 function calculateRowSums(row, dir) {
     var ready = false;
 
-    while (ready == false) {
+    //while (ready == false) {
 
-        ready = true;
+        //ready = true;
 
         for (var j = 0; j < row.length - 1; j++) {
 
@@ -350,13 +350,12 @@ function calculateRowSums(row, dir) {
 
                     row[elInd + sign].obj = null;
                     row = sortRow(row, dir);
-                    ready = false;
-
+                    //ready = false;
                     break;
                 }
             }
         }
-    }
+    //}
 
     return row;
 }
@@ -438,7 +437,6 @@ function moveAllBoxesInDir(dir) {
     }
 
     stage.add(gameLayer);
-
 }
 
 //input handling
