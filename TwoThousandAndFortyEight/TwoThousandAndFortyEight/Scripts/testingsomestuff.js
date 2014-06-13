@@ -148,24 +148,7 @@ var gameLayer = new Kinetic.Layer();
 //logic.reset();
 
 for (var j = 0; j < 2; j++) {
-
-    var randCell = randomCell(grid);
-    //alert(randCell);
-    var gRow = grid[randCell].row;
-    var gCol = grid[randCell].col;
-    var value = 2;
-    var bx = 16 * (gCol + 1) + gCol * RECT_WIDTH;
-    var by = 16 * (gRow + 1) + gRow * RECT_HEIGHT;
-    var box = createBox(bx, by, RECT_WIDTH, RECT_HEIGHT, valueToColor(value), value);
-    //box.rect.id = randCell;
-    //box.text.id = randCell;
-
-    grid[randCell].obj = box;
-
-    gameLayer.add(box.rect);
-    gameLayer.add(box.text);
-
-    //logic.setElement(gRow, gCol, 1);
+    addRandomCellToGameLayer();
 }
 stage.add(gameLayer);
 
@@ -276,13 +259,10 @@ function getAllRows(dir) {
     return res;
 }
 
-function sortGridByRows(gridObj)
-{
-    return gridObj.sort(function (a, b)
-    {
+function sortGridByRows(gridObj) {
+    return gridObj.sort(function (a, b) {
 
-        if (a.row<b.row)
-        {
+        if (a.row < b.row) {
             return -1;
         }
         else if (a.row == b.row) {
@@ -295,7 +275,7 @@ function sortGridByRows(gridObj)
 function sortGridByCols(gridObj) {
     return gridObj.sort(function (a, b) {
 
-        if (a.col< b.col) {
+        if (a.col < b.col) {
             return -1;
         }
         else if (a.col == b.col) {
@@ -318,8 +298,7 @@ function sortRow(row, dir) {
             }
             return -sign;
         }
-        else if (a.obj !== null && b.obj !== null)
-        {
+        else if (a.obj !== null && b.obj !== null) {
             return 0;
         }
         return sign;
@@ -333,28 +312,28 @@ function calculateRowSums(row, dir) {
 
     //while (ready == false) {
 
-        //ready = true;
+    //ready = true;
 
-        for (var j = 0; j < row.length - 1; j++) {
+    for (var j = 0; j < row.length - 1; j++) {
 
-            var elInd = j;
-            var sign = 1;
+        var elInd = (dir == 'right' || dir == 'down') ? (row.length - 1) - j : j;
+        var sign = (dir == 'right' || dir == 'down') ? -1 : 1;
 
-            var cEl = row[elInd].obj;
-            var nEl = row[elInd + sign].obj;
+        var cEl = row[elInd].obj;
+        var nEl = row[elInd + sign].obj;
 
-            if (cEl !== null && nEl !== null) {
-                if ((cEl.rect.attrs.value | 0) === (nEl.rect.attrs.value | 0)) {
+        if (cEl !== null && nEl !== null) {
+            if ((cEl.rect.attrs.value | 0) === (nEl.rect.attrs.value | 0)) {
 
-                    row[elInd].obj.rect.attrs.value = (row[elInd].obj.rect.attrs.value | 0) * 2;
+                row[elInd].obj.rect.attrs.value = (row[elInd].obj.rect.attrs.value | 0) * 2;
 
-                    row[elInd + sign].obj = null;
-                    row = sortRow(row, dir);
-                    //ready = false;
-                    break;
-                }
+                row[elInd + sign].obj = null;
+                row = sortRow(row, dir);
+                //ready = false;
+                break;
             }
         }
+    }
     //}
 
     return row;
@@ -367,8 +346,8 @@ function fixRowElementsIndex(row, dir, coli, nameprefix) {
         var gCol = (dir === 'h') ? i : coli;
 
         row[i].row = gRow;
-        row[i].col = gCol;    
-       
+        row[i].col = gCol;
+
         if (row[i].obj !== null) {
 
             var bx = 16 * (gCol + 1) + gCol * RECT_WIDTH;
@@ -382,16 +361,32 @@ function fixRowElementsIndex(row, dir, coli, nameprefix) {
 }
 
 
+function addRandomCellToGameLayer() {
+    var randCell = randomCell(grid);
+
+    var gRow = grid[randCell].row;
+    var gCol = grid[randCell].col;
+    var value = 2;
+    var bx = 16 * (gCol + 1) + gCol * RECT_WIDTH;
+    var by = 16 * (gRow + 1) + gRow * RECT_HEIGHT;
+    var box = createBox(bx, by, RECT_WIDTH, RECT_HEIGHT, valueToColor(value), value);
+
+    grid[randCell].obj = box;
+
+    gameLayer.add(box.rect);
+    gameLayer.add(box.text);
+}
+
 function createAnimationsList(oldRow, newRow, dir) {
 
 }
 
 function moveAllBoxesInDir(dir) {
 
-	var orientation=(dir==='down' || dir==='up')?'v':'h';
-	//var corientation=(dir=='down' || dir=='up')?'h':'v';
-	
-	var rows = getAllRows(orientation);
+    var orientation = (dir === 'down' || dir === 'up') ? 'v' : 'h';
+    //var corientation=(dir=='down' || dir=='up')?'h':'v';
+
+    var rows = getAllRows(orientation);
     var newGrid = [];
 
     for (var rowi = 0; rowi < rows.length; rowi++) {
@@ -404,37 +399,19 @@ function moveAllBoxesInDir(dir) {
         }
     }
 
-
-	grid = sortGridByCols(sortGridByRows(newGrid));
+    grid = sortGridByCols(sortGridByRows(newGrid));
 
     gameLayer.removeChildren();
 
     for (var i = 0; i < grid.length; i++) {
 
-        if (grid[i].obj !== null)
-        {
+        if (grid[i].obj !== null) {
             gameLayer.add(grid[i].obj.rect);
             gameLayer.add(grid[i].obj.text);
         }
     }
 
-    for (var j = 0; j < 1; j++) {
-
-        var randCell = randomCell(grid);
-
-        var gRow = grid[randCell].row;
-        var gCol = grid[randCell].col;
-        var value = 2;
-        var bx = 16 * (gCol + 1) + gCol * RECT_WIDTH;
-        var by = 16 * (gRow + 1) + gRow * RECT_HEIGHT;
-        var box = createBox(bx, by, RECT_WIDTH, RECT_HEIGHT, valueToColor(value), value);
-
-        grid[randCell].obj = box;
-
-        gameLayer.add(box.rect);
-        gameLayer.add(box.text);
-
-    }
+    addRandomCellToGameLayer();
 
     stage.add(gameLayer);
 }
