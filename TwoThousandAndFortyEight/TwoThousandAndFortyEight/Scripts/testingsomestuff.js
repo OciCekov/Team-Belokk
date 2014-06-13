@@ -443,7 +443,7 @@ function moveAllBoxesInDir(dir) {
 
 //input handling
 $(document).ready(function () {
-    $(document).keydown(function (e) {
+    $(document).keyup(function (e) {
 
         switch (e.keyCode) {
 
