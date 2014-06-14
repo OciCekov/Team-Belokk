@@ -158,7 +158,7 @@ for (var j = 0; j < 2; j++) {
 
 stage.add(gameLayer);
 
-var score = 0;
+var score = 1320;
 var highScore = 0;
 
 var paper = Raphael(0, 0, 500, 40);
@@ -474,9 +474,9 @@ function addScore(scoreAddition) {
     }
 }
 
-visualizeScore();
+visualizeScoreBoard();
 
-function visualizeScore() {
+function visualizeScoreBoard() {
     function leftLine(x, y, strokeColor) {
         var pathArray = ['M', x, y, 'L', x, y + 10, x + 0.5, y + 9.5, x + 0.5, y + 0.5, 'Z'];
         var line = paper.path(pathArray.join(' '));
@@ -523,7 +523,7 @@ function visualizeScore() {
                 topLine(x + 1, y - 1, strokeColor);
                 rightLine(x + 12, y, strokeColor);
                 rightLine(x + 12, y + 13, strokeColor);
-                bottomLine(x + 1, 24, strokeColor);
+                bottomLine(x + 1, y + 24, strokeColor);
                 leftLine(x, y + 13, strokeColor);
                 leftLine(x, y, strokeColor);
                 break;
@@ -595,10 +595,45 @@ function visualizeScore() {
         paper.text(SCORE_POSITION.X - 50, SCORE_POSITION.Y + 15, 'Score').attr({ 'font-size': 25 });
         paper.text(HIGH_SCORE_POSITION.X - 75, HIGH_SCORE_POSITION.Y + 15, 'High score').attr({ 'font-size': 25 });
         for (var i = 0; i < 5; i++) {
-            visualizeDigits(8, SCORE_POSITION.X + 5 + (i * 15), SCORE_POSITION.Y + 4, '#DDD');
-            visualizeDigits(8, HIGH_SCORE_POSITION.X + 5 + (i * 15), HIGH_SCORE_POSITION.Y + 4, '#DDD');
+            visualizeDigits(8, SCORE_POSITION.X + 65 - (i * 15), SCORE_POSITION.Y + 4, '#DDD');
+            visualizeDigits(8, HIGH_SCORE_POSITION.X + 65 - (i * 15), HIGH_SCORE_POSITION.Y + 4, '#DDD');
         }
     }
 
     initScoreBoard();
+
+    function resetScore() {
+        for (var i = 0; i < 5; i++) {
+            visualizeDigits(8, SCORE_POSITION.X + 65 - (i * 15), SCORE_POSITION.Y + 4, '#DDD');
+            visualizeDigits(8, HIGH_SCORE_POSITION.X + 65 - (i * 15), HIGH_SCORE_POSITION.Y + 4, '#DDD');
+        }
+
+        visualizeDigits(0, SCORE_POSITION.X + 65, SCORE_POSITION.Y + 4, '#000');
+    }
+
+    resetScore();
+
+    function visualizeScore() {
+        var currentScore = score;
+        var i = 0;
+        while (currentScore > 0) {
+            var digit = currentScore % 10;
+            visualizeDigits(digit, SCORE_POSITION.X + 65 - (i * 15), SCORE_POSITION.Y + 4, '#000');
+            currentScore = parseInt(currentScore / 10);
+            i++;
+        }
+
+        if (score > highScore) {
+            var currentHighScore = score;
+            var i = 0;
+            while (currentHighScore > 0) {
+                var digit = currentHighScore % 10;
+                visualizeDigits(digit, HIGH_SCORE_POSITION.X + 65 - (i * 15), HIGH_SCORE_POSITION.Y + 4, '#000');
+                currentHighScore = parseInt(currentHighScore / 10);
+                i++;
+            }
+        }
+    }
+
+    visualizeScore();
 }
