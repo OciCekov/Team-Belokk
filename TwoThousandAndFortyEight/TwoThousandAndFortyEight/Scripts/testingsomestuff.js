@@ -14,11 +14,16 @@ var ROWS = (STAGE_WIDTH / RECT_WIDTH) | 0;
 var COLS = (STAGE_HEIGHT / RECT_HEIGHT) | 0;
 
 var BG_COLOR = "#2D4559";
-var BG_BOX_COLOR = "576A7A";
+var BG_BOX_COLOR = "#576A7A";
 var ACTIVE_BOX_COLOR = "#000000";
 var ACTIVE_FONT_COLOR = "#FFFFFF";
 
 var ANIMATION_STEP_IN_PIXELS = 40;
+
+var SCORE_POSITION = { x: 10, y: 10 }
+var HIGH_SCORE_POSITION = { x: 300, y: 10 }
+var SCORE_WIDTH = 100;
+var SCORE_HEIGHT = 30;
 
 //functions
 
@@ -150,8 +155,25 @@ var gameLayer = new Kinetic.Layer();
 for (var j = 0; j < 2; j++) {
     addRandomCellToGameLayer();
 }
+
 stage.add(gameLayer);
 
+var score = 0;
+var highScore = 0;
+
+var paper = Raphael(0, 0, 500, 40);
+
+var scoreRect = paper.rect(SCORE_POSITION.x, SCORE_POSITION.y, SCORE_WIDTH, SCORE_HEIGHT);
+scoreRect.attr({
+    stroke: 'none',
+    fill: '#EEE'
+});
+
+var highScoreRect = paper.rect(HIGH_SCORE_POSITION.x, HIGH_SCORE_POSITION.y, SCORE_WIDTH, SCORE_HEIGHT);
+highScoreRect.attr({
+    stroke: 'none',
+    fill: '#EEE'
+})
 
 //start game loop
 //var gameInterval = setInterval(function () { gameLoop() }, 1000);
@@ -248,7 +270,7 @@ function getAllRows(dir) {
     var res = [];
     var limit = COLS;
     if (dir === "v") {
-        var limit = ROWS;
+        limit = ROWS;
     }
 
     //console.log(dir);
@@ -444,3 +466,136 @@ $(document).ready(function () {
         }
     });
 });
+
+function addScore(scoreAddition) {
+    score += scoreAddition;
+    if (highScore < score) {
+        highScore = score;
+    }
+}
+
+visualizeScore();
+
+function visualizeScore() {
+    function leftLine(x, y, fillColor) {
+        var pathArray = ['M', x, y, 'L', x, y + 10, x + 0.5, y + 9.5, x + 0.5, y + 0.5, 'Z'];
+        var line = paper.path(pathArray.join(' '));
+        line.attr({
+            fill: fillColor
+        });
+    }
+
+    function rightLine(x, y, fillColor) {
+        var pathArray = ['M', x, y, 'L', x, y + 10, x - 0.5, y + 9.5, x - 0.5, y + 0.5, 'Z'];
+        var line = paper.path(pathArray.join(' '));
+        line.attr({
+            fill: fillColor
+        });
+    }
+
+    function topLine(x, y, fillColor) {
+        var pathArray = ['M', x, y, 'L', x + 10, y, x + 9.5, y + 0.5, x + 0.5, y + 0.5, 'Z'];
+        var line = paper.path(pathArray.join(' '));
+        line.attr({
+            fill: fillColor
+        });
+    }
+
+    function middleLine(x, y, fillColor) {
+        var pathArray = ['M', x, y, 'L', x + 0.25, y - 0.25, x + 9.75, y - 0.25, x + 10, y, x + 9.75, y + 0.25, x + 0.25, y + 0.25, 'Z'];
+        var line = paper.path(pathArray.join(' '));
+        line.attr({
+            fill: fillColor
+        });
+    }
+
+    function bottomLine(x, y, fillColor) {
+        var pathArray = ['M', x, y, 'L', x + 10, y, x + 9.5, y - 0.5, x + 0.5, y - 0.5, 'Z'];
+        var line = paper.path(pathArray.join(' '));
+        line.attr({
+            fill: fillColor
+        });
+    }
+
+    function visualizeDigits(digit, x, y, fillColor) {
+        switch (digit) {
+            case 0:
+                topLine(x + 1, y - 1, fillColor);
+                rightLine(x + 12, y, fillColor);
+                rightLine(x + 12, y + 13, fillColor);
+                bottomLine(x + 1, 24, fillColor);
+                leftLine(x, y + 13, fillColor);
+                leftLine(x, y, fillColor);
+                break;
+            case 1:
+                rightLine(x + 12, y, fillColor);
+                rightLine(x + 12, y + 13, fillColor);
+                break;
+            case 2:
+                topLine(x + 1, y - 1, fillColor);
+                rightLine(x + 12, y, fillColor);
+                middleLine(x + 1, y + 11.5, fillColor);
+                leftLine(x, y + 13, fillColor);
+                bottomLine(x + 1, 24, fillColor);
+                break;
+            case 3:
+                topLine(x + 1, y - 1, fillColor);
+                rightLine(x + 12, y, fillColor);
+                middleLine(x + 1, y + 11.5, fillColor);
+                rightLine(x + 12, y + 13, fillColor);
+                bottomLine(x + 1, 24, fillColor);
+                break;
+            case 4:
+                leftLine(x, y, fillColor);
+                middleLine(x + 1, y + 11.5, fillColor);
+                rightLine(x + 12, y, fillColor);
+                rightLine(x + 12, y + 13, fillColor);
+                break;
+            case 5:
+                topLine(x + 1, y - 1, fillColor);
+                leftLine(x, y, fillColor);
+                middleLine(x + 1, y + 11.5, fillColor);
+                rightLine(x + 12, y + 13, fillColor);
+                bottomLine(x + 1, 24, fillColor);
+                break;
+            case 6:
+                topLine(x + 1, y - 1, fillColor);
+                leftLine(x, y, fillColor);
+                leftLine(x, y + 13, fillColor);
+                bottomLine(x + 1, 24, fillColor);
+                rightLine(x + 12, y + 13, fillColor);
+                middleLine(x + 1, y + 11.5, fillColor);
+                break;
+            case 7:
+                topLine(x + 1, y - 1, fillColor);
+                rightLine(x + 12, y, fillColor);
+                rightLine(x + 12, y + 13, fillColor);
+                break;
+            case 8:
+                topLine(x + 1, y - 1, fillColor);
+                rightLine(x + 12, y, fillColor);
+                middleLine(x + 1, y + 11.5, fillColor);
+                leftLine(x, y, fillColor);
+                rightLine(x + 12, y + 13, fillColor);
+                bottomLine(x + 1, 24, fillColor);
+                leftLine(x, y + 13, fillColor);
+                break;
+            case 9:
+                topLine(x + 1, y - 1, fillColor);
+                leftLine(x, y, fillColor);
+                middleLine(x + 1, y + 11.5, fillColor);
+                rightLine(x + 12, y, fillColor);
+                rightLine(x + 12, y + 13, fillColor);
+                bottomLine(x + 1, 24, fillColor);
+                break;
+        }
+    }
+
+    leftLine(12, 12, '#000');
+    leftLine(12, 25, '#000');
+    rightLine(24, 12, '#000');
+    rightLine(24, 25, '#000');
+    topLine(13, 11, '#000');
+    middleLine(13, 23.5, '#000');
+    bottomLine(13, 36, '#000');
+}
