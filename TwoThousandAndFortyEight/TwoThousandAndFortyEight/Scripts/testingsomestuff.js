@@ -18,7 +18,7 @@ var BG_BOX_COLOR = "#576A7A";
 var ACTIVE_BOX_COLOR = "#000000";
 var ACTIVE_FONT_COLOR = "#FFFFFF";
 
-var ANIMATION_STEP_IN_PIXELS = 40;
+var ANIMATION_STEP_IN_PIXELS = 60;
 
 var SCORE_POSITION = { X: 150, Y: 10 }
 var HIGH_SCORE_POSITION = { X: 400, Y: 10 }
@@ -45,45 +45,57 @@ function valueToColor(val) {
 
 //var shape = stage.find('#myRect')[0];
 
+var birthId = 0;
 
-function createBox(bx, by, bwidth, bheight, fillc, bval) {
+function createBox(bx, by, bwidth, bheight, fillc, bval, birthid) {
+
+    var bid = '_' + birthId;
+    if (birthid !== undefined) {
+        bid = birthid;
+    }
+    else {
+        birthId++;
+    }
 
     var rectidPostfix = bx + '-' + by;
     var rectangle = new Kinetic.Rect({
         id: 's-' + rectidPostfix,
+        birthid: bid,
         value: bval,
         cornerRadius: 5,
         x: bx,
         y: by,
         width: bwidth,
         height: bheight,
-        fill: fillc
+        fill: fillc,
+        opacity: 100
     });
 
     if (bval === undefined) {
         return rectangle;
     }
 
-    rectangle.id = 'a-' + rectidPostfix;
+    rectangle.attrs.id = 'a-' + rectidPostfix;
 
     return {
         rect: rectangle,
         text: new Kinetic.Text({
             x: bx,
             y: by + 33,
-            id: 'st-' + rectidPostfix,
+            birthid: bid,
             width: bwidth,
             height: bheight,
+            id: 'st-' + rectidPostfix,
             align: "center",
             text: bval,
             fontSize: 48,
             fontFamily: "Clear Sans",
             fontStyle: "bold",
-            fill: ACTIVE_FONT_COLOR
+            fill: ACTIVE_FONT_COLOR,
+            opacity: 100
         })
     };
 
-    return result;
 }
 
 function createGrid() {
@@ -100,8 +112,7 @@ function createGrid() {
     return grid;
 }
 
-
-
+//generate random empty cell index
 function randomCell(grid) {
 
     var freeCells = [];
@@ -156,7 +167,7 @@ for (var j = 0; j < 2; j++) {
     addRandomCellToGameLayer();
 }
 
-stage.add(gameLayer);
+updateGameLayer();
 
 var score = 1320;
 var highScore = 0;
@@ -242,7 +253,8 @@ stage.add(layer);*/
 
 //var rectangle=stage.rect(
 
-//gets a row from the grid matrix
+
+//gets a row from the grid
 function getRowFromGrid(dir, rowi) {
     var rRow = [];
     var rowWidth = COLS;
@@ -348,11 +360,13 @@ function calculateRowSums(row, dir) {
             if ((cEl.rect.attrs.value | 0) === (nEl.rect.attrs.value | 0)) {
 
                 row[elInd].obj.rect.attrs.value = (row[elInd].obj.rect.attrs.value | 0) * 2;
-
+                birthId++;
+                row[elInd].obj.rect.attrs.birthid = '_' + birthId;
                 row[elInd + sign].obj = null;
                 row = sortRow(row, dir);
+                //elInd += sign;
                 //ready = false;
-                break;
+                //break;
             }
         }
     }
@@ -375,7 +389,7 @@ function fixRowElementsIndex(row, dir, coli, nameprefix) {
             var bx = 16 * (gCol + 1) + gCol * RECT_WIDTH;
             var by = 16 * (gRow + 1) + gRow * RECT_HEIGHT;
 
-            row[i].obj = createBox(bx, by, RECT_WIDTH, RECT_HEIGHT, valueToColor(row[i].obj.rect.attrs.value), row[i].obj.rect.attrs.value);
+            row[i].obj = createBox(bx, by, RECT_WIDTH, RECT_HEIGHT, valueToColor(row[i].obj.rect.attrs.value), row[i].obj.rect.attrs.value, row[i].obj.rect.attrs.birthid);
         }
 
     }
@@ -392,7 +406,8 @@ function addRandomCellToGameLayer() {
     var value = 2;
     var bx = 16 * (gCol + 1) + gCol * RECT_WIDTH;
     var by = 16 * (gRow + 1) + gRow * RECT_HEIGHT;
-    var box = createBox(bx, by, RECT_WIDTH, RECT_HEIGHT, valueToColor(value), value);
+    birthId++;
+    var box = createBox(bx, by, RECT_WIDTH, RECT_HEIGHT, valueToColor(value), value,'_'+birthId);
 
     grid[randCell].obj = box;
 
@@ -400,8 +415,213 @@ function addRandomCellToGameLayer() {
     gameLayer.add(box.text);
 }
 
-function createAnimationsList(oldRow, newRow, dir) {
+function updateGameLayer(animations) {
+    //if something better comes up, we will add it here
+    stage.add(gameLayer);
+    playTestingAnimation(animations);
+}
 
+function getGridObjectByBirthId(oldgrid, objBirthId) {
+    var obj = oldgrid.filter(function (a) {
+        if (a.obj !== null) {
+            var objA = JSON.parse(a.obj.rect);
+            return objA.attrs.birthid === objBirthId;
+        }
+        return false;
+    });
+
+    return obj;
+}
+
+//animation functions
+
+/*function fadeOutObjFrame(obj) {
+    if (obj.attrs.width <= 0 && obj.attrs.height <= 0) {
+        obj.hide();
+        return true;
+    }
+    else {
+        obj.attrs.x += 5;
+        obj.attrs.y += 5;
+        obj.attrs.width -= 10;
+        obj.attrs.height -= 10;
+        obj.attrs.fontSize = 0;
+        return false;
+    }
+}*/
+
+function fadeInObjFrame(obj) {
+    if (obj.attrs.width === RECT_WIDTH) {
+        return true;
+    }
+    else {
+        obj.attrs.x -= RECT_WIDTH / 10;
+        obj.attrs.y -= RECT_WIDTH / 10;
+        obj.attrs.width += RECT_WIDTH / 5;
+        obj.attrs.height += RECT_WIDTH / 5;
+        return false;
+    }
+}
+
+/*function hideObj(obj) {
+    obj.attrs.opacity = 0;
+}*/
+
+function minimizeObj(obj) {
+    obj.attrs.x += RECT_WIDTH / 2;
+    obj.attrs.y += RECT_HEIGHT / 2;
+    obj.attrs.width = 0;
+    obj.attrs.height = 0;
+}
+
+function positionObj(obj, row, col) {
+    obj.attrs.x = 16 * (col + 1) + col * RECT_WIDTH;
+    obj.attrs.y = 16 * (row + 1) + row * RECT_HEIGHT + ((obj.attrs.text !== undefined) ? 33 : 0);
+}
+
+function moveObjFrame(obj, fromRow, fromCol, toRow, toCol) {
+
+    var add = ((obj.attrs.text !== undefined) ? 33 : 0);
+
+    var from = { x: 16 * (fromCol + 1) + fromCol * RECT_WIDTH, y: (16 * (fromRow + 1) + fromRow * RECT_HEIGHT) + add };
+    var to = { x: 16 * (toCol + 1) + toCol * RECT_WIDTH, y: (16 * (toRow + 1) + toRow * RECT_HEIGHT) + add };
+
+    if (Math.abs(obj.attrs.x - to.x) < ANIMATION_STEP_IN_PIXELS) { //&& (Math.abs(obj.attrs.y - to.y) < ANIMATION_STEP_IN_PIXELS)) {
+        obj.attrs.x = to.x;
+    }
+    else if (to.x > from.x) {
+        obj.attrs.x += ANIMATION_STEP_IN_PIXELS;
+        return false;
+    }
+    else if (from.x > to.x) {
+        obj.attrs.x -= ANIMATION_STEP_IN_PIXELS;
+        return false;
+    }
+
+    if ((Math.abs(obj.attrs.y - to.y) < ANIMATION_STEP_IN_PIXELS)) { //&& (Math.abs(obj.attrs.y - to.y) < ANIMATION_STEP_IN_PIXELS)) {
+        obj.attrs.y = to.y;
+    }
+    else if (to.y > from.y) {
+        obj.attrs.y += ANIMATION_STEP_IN_PIXELS;
+        return false;
+    }
+    else if (from.y > to.y) {
+        obj.attrs.y -= ANIMATION_STEP_IN_PIXELS;
+        return false;
+    }
+
+    if ((Math.abs(obj.attrs.x - to.x) < ANIMATION_STEP_IN_PIXELS) && (Math.abs(obj.attrs.y - to.y) < ANIMATION_STEP_IN_PIXELS))
+    {
+        return true;
+    }
+}
+
+
+function playTestingAnimation(animations) {
+
+    console.log(animations);
+
+    for (var ci = 0; ci < gameLayer.children.length; ci++) {
+
+        var element = gameLayer.children[ci];
+        var elementBId = element.attrs.birthid;
+        //move objects that are present in the current and the earlier grids     
+        if (animations !== undefined) {
+            if (animations[elementBId] !== undefined) {
+                var assocAnimation = animations[elementBId];
+                if (assocAnimation.type === "move") {
+                    positionObj(element, assocAnimation.oldrow, assocAnimation.oldcol);
+                }
+                else {
+                    minimizeObj(element);
+                }
+            }
+            else {
+                minimizeObj(element);
+            }
+        }
+        else {
+            minimizeObj(element);
+        }
+    }
+
+    var anim = new Kinetic.Animation(function (frame) {
+        var animationHasEnded = true;
+        //updateGameLayer();       
+        for (var ci = 0; ci < gameLayer.children.length; ci++) {
+
+            var element = gameLayer.children[ci];
+            var elementBId = element.attrs.birthid;
+            //move objects that are present in the current and the earlier grids     
+            if (animations !== undefined) {
+                if (animations[elementBId] !== undefined) {
+                    var assocAnimation = animations[elementBId];
+                    if (assocAnimation.type === "move") {
+
+                            var moved = moveObjFrame(element, assocAnimation.oldrow, assocAnimation.oldcol, assocAnimation.newrow, assocAnimation.newcol);
+                            if (!moved) {
+                                animationHasEnded = false;
+                            }
+                    }
+                    else {
+                        
+                            //fade in new elements
+                            var fadedIn = fadeInObjFrame(element);
+
+                            if (!fadedIn) {
+                                animationHasEnded = false;
+                            }                        
+                    }
+                }
+                else {
+
+                    //fade in new elements
+                    var fadedIn = fadeInObjFrame(element);
+
+                    if (!fadedIn) {
+                        animationHasEnded = false;
+                    }
+                }
+            }
+            else {
+                    //fade in new elements
+                    var fadedIn = fadeInObjFrame(element);
+
+                    if (!fadedIn) {
+                        animationHasEnded = false;
+                    }                
+            }
+        }
+
+        if (animationHasEnded) {
+            anim.stop();
+        }
+    }, gameLayer);
+
+    anim.start();
+}
+
+function createAnimationsListFromGridDiffs(oldGrid, newGrid) {
+
+    var animations = {};
+    for (var h = 0; h < newGrid.length; h++) {
+
+        var currentElement = newGrid[h];
+        if (currentElement.obj !== null) {
+            var objBirthId = currentElement.obj.rect.attrs.birthid;
+            var persistingObjInOldGrid = getGridObjectByBirthId(oldGrid, objBirthId)[0];
+
+            if (persistingObjInOldGrid !== undefined) {
+                //console.log(persistingObjInOldGrid);
+                animations['' + objBirthId] = { type: 'move', newrow: currentElement.row, newcol: currentElement.col, oldrow: persistingObjInOldGrid.row, oldcol: persistingObjInOldGrid.col };
+            }
+            else {
+                animations['' + objBirthId] = { type: 'fade' };
+            }
+        }
+    }
+
+    return animations;
 }
 
 function moveBoxesInDir(dir) {
@@ -411,6 +631,7 @@ function moveBoxesInDir(dir) {
 
     var rows = getAllRows(orientation);
     var newGrid = [];
+    var oldGrid = JSON.parse(JSON.stringify(grid));//.slice(0);    
 
     for (var rowi = 0; rowi < rows.length; rowi++) {
 
@@ -422,7 +643,13 @@ function moveBoxesInDir(dir) {
         }
     }
 
-    grid = sortGridByCols(sortGridByRows(newGrid));
+    var calcedGrid = sortGridByCols(sortGridByRows(newGrid));
+    //console.log(oldGrid);
+    //console.log(calcedGrid);
+    //console.log(animations);
+    grid = calcedGrid;
+
+    var animations = createAnimationsListFromGridDiffs(oldGrid, grid);
 
     gameLayer.removeChildren();
 
@@ -433,10 +660,9 @@ function moveBoxesInDir(dir) {
             gameLayer.add(grid[i].obj.text);
         }
     }
-
     addRandomCellToGameLayer();
-
-    stage.add(gameLayer);
+    //stage.add(gameLayer);
+    updateGameLayer(animations);
 }
 
 //input handling
@@ -447,6 +673,7 @@ $(document).ready(function () {
 
             case UP_ARROW:
 
+                //playTestingAnimation();
                 moveBoxesInDir('up');
                 break;
 
