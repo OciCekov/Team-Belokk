@@ -20,9 +20,9 @@ var ACTIVE_FONT_COLOR = "#FFFFFF";
 
 var ANIMATION_STEP_IN_PIXELS = 40;
 
-var SCORE_POSITION = { x: 10, y: 10 }
-var HIGH_SCORE_POSITION = { x: 300, y: 10 }
-var SCORE_WIDTH = 100;
+var SCORE_POSITION = { X: 150, Y: 10 }
+var HIGH_SCORE_POSITION = { X: 400, Y: 10 }
+var SCORE_WIDTH = 80;
 var SCORE_HEIGHT = 30;
 
 //functions
@@ -163,13 +163,13 @@ var highScore = 0;
 
 var paper = Raphael(0, 0, 500, 40);
 
-var scoreRect = paper.rect(SCORE_POSITION.x, SCORE_POSITION.y, SCORE_WIDTH, SCORE_HEIGHT);
+var scoreRect = paper.rect(SCORE_POSITION.X, SCORE_POSITION.Y, SCORE_WIDTH, SCORE_HEIGHT);
 scoreRect.attr({
     stroke: 'none',
     fill: '#EEE'
 });
 
-var highScoreRect = paper.rect(HIGH_SCORE_POSITION.x, HIGH_SCORE_POSITION.y, SCORE_WIDTH, SCORE_HEIGHT);
+var highScoreRect = paper.rect(HIGH_SCORE_POSITION.X, HIGH_SCORE_POSITION.Y, SCORE_WIDTH, SCORE_HEIGHT);
 highScoreRect.attr({
     stroke: 'none',
     fill: '#EEE'
@@ -477,125 +477,128 @@ function addScore(scoreAddition) {
 visualizeScore();
 
 function visualizeScore() {
-    function leftLine(x, y, fillColor) {
+    function leftLine(x, y, strokeColor) {
         var pathArray = ['M', x, y, 'L', x, y + 10, x + 0.5, y + 9.5, x + 0.5, y + 0.5, 'Z'];
         var line = paper.path(pathArray.join(' '));
         line.attr({
-            fill: fillColor
+            stroke: strokeColor
         });
     }
 
-    function rightLine(x, y, fillColor) {
+    function rightLine(x, y, strokeColor) {
         var pathArray = ['M', x, y, 'L', x, y + 10, x - 0.5, y + 9.5, x - 0.5, y + 0.5, 'Z'];
         var line = paper.path(pathArray.join(' '));
         line.attr({
-            fill: fillColor
+            stroke: strokeColor
         });
     }
 
-    function topLine(x, y, fillColor) {
+    function topLine(x, y, strokeColor) {
         var pathArray = ['M', x, y, 'L', x + 10, y, x + 9.5, y + 0.5, x + 0.5, y + 0.5, 'Z'];
         var line = paper.path(pathArray.join(' '));
         line.attr({
-            fill: fillColor
+            stroke: strokeColor
         });
     }
 
-    function middleLine(x, y, fillColor) {
+    function middleLine(x, y, strokeColor) {
         var pathArray = ['M', x, y, 'L', x + 0.25, y - 0.25, x + 9.75, y - 0.25, x + 10, y, x + 9.75, y + 0.25, x + 0.25, y + 0.25, 'Z'];
         var line = paper.path(pathArray.join(' '));
         line.attr({
-            fill: fillColor
+            stroke: strokeColor
         });
     }
 
-    function bottomLine(x, y, fillColor) {
+    function bottomLine(x, y, strokeColor) {
         var pathArray = ['M', x, y, 'L', x + 10, y, x + 9.5, y - 0.5, x + 0.5, y - 0.5, 'Z'];
         var line = paper.path(pathArray.join(' '));
         line.attr({
-            fill: fillColor
+            stroke: strokeColor
         });
     }
 
-    function visualizeDigits(digit, x, y, fillColor) {
+    function visualizeDigits(digit, x, y, strokeColor) {
         switch (digit) {
             case 0:
-                topLine(x + 1, y - 1, fillColor);
-                rightLine(x + 12, y, fillColor);
-                rightLine(x + 12, y + 13, fillColor);
-                bottomLine(x + 1, 24, fillColor);
-                leftLine(x, y + 13, fillColor);
-                leftLine(x, y, fillColor);
+                topLine(x + 1, y - 1, strokeColor);
+                rightLine(x + 12, y, strokeColor);
+                rightLine(x + 12, y + 13, strokeColor);
+                bottomLine(x + 1, 24, strokeColor);
+                leftLine(x, y + 13, strokeColor);
+                leftLine(x, y, strokeColor);
                 break;
             case 1:
-                rightLine(x + 12, y, fillColor);
-                rightLine(x + 12, y + 13, fillColor);
+                rightLine(x + 12, y, strokeColor);
+                rightLine(x + 12, y + 13, strokeColor);
                 break;
             case 2:
-                topLine(x + 1, y - 1, fillColor);
-                rightLine(x + 12, y, fillColor);
-                middleLine(x + 1, y + 11.5, fillColor);
-                leftLine(x, y + 13, fillColor);
-                bottomLine(x + 1, 24, fillColor);
+                topLine(x + 1, y - 1, strokeColor);
+                rightLine(x + 12, y, strokeColor);
+                middleLine(x + 1, y + 11.5, strokeColor);
+                leftLine(x, y + 13, strokeColor);
+                bottomLine(x + 1, y + 24, strokeColor);
                 break;
             case 3:
-                topLine(x + 1, y - 1, fillColor);
-                rightLine(x + 12, y, fillColor);
-                middleLine(x + 1, y + 11.5, fillColor);
-                rightLine(x + 12, y + 13, fillColor);
-                bottomLine(x + 1, 24, fillColor);
+                topLine(x + 1, y - 1, strokeColor);
+                rightLine(x + 12, y, strokeColor);
+                middleLine(x + 1, y + 11.5, strokeColor);
+                rightLine(x + 12, y + 13, strokeColor);
+                bottomLine(x + 1, y + 24, strokeColor);
                 break;
             case 4:
-                leftLine(x, y, fillColor);
-                middleLine(x + 1, y + 11.5, fillColor);
-                rightLine(x + 12, y, fillColor);
-                rightLine(x + 12, y + 13, fillColor);
+                leftLine(x, y, strokeColor);
+                middleLine(x + 1, y + 11.5, strokeColor);
+                rightLine(x + 12, y, strokeColor);
+                rightLine(x + 12, y + 13, strokeColor);
                 break;
             case 5:
-                topLine(x + 1, y - 1, fillColor);
-                leftLine(x, y, fillColor);
-                middleLine(x + 1, y + 11.5, fillColor);
-                rightLine(x + 12, y + 13, fillColor);
-                bottomLine(x + 1, 24, fillColor);
+                topLine(x + 1, y - 1, strokeColor);
+                leftLine(x, y, strokeColor);
+                middleLine(x + 1, y + 11.5, strokeColor);
+                rightLine(x + 12, y + 13, strokeColor);
+                bottomLine(x + 1, y + 24, strokeColor);
                 break;
             case 6:
-                topLine(x + 1, y - 1, fillColor);
-                leftLine(x, y, fillColor);
-                leftLine(x, y + 13, fillColor);
-                bottomLine(x + 1, 24, fillColor);
-                rightLine(x + 12, y + 13, fillColor);
-                middleLine(x + 1, y + 11.5, fillColor);
+                topLine(x + 1, y - 1, strokeColor);
+                leftLine(x, y, strokeColor);
+                leftLine(x, y + 13, strokeColor);
+                bottomLine(x + 1, y + 24, strokeColor);
+                rightLine(x + 12, y + 13, strokeColor);
+                middleLine(x + 1, y + 11.5, strokeColor);
                 break;
             case 7:
-                topLine(x + 1, y - 1, fillColor);
-                rightLine(x + 12, y, fillColor);
-                rightLine(x + 12, y + 13, fillColor);
+                topLine(x + 1, y - 1, strokeColor);
+                rightLine(x + 12, y, strokeColor);
+                rightLine(x + 12, y + 13, strokeColor);
                 break;
             case 8:
-                topLine(x + 1, y - 1, fillColor);
-                rightLine(x + 12, y, fillColor);
-                middleLine(x + 1, y + 11.5, fillColor);
-                leftLine(x, y, fillColor);
-                rightLine(x + 12, y + 13, fillColor);
-                bottomLine(x + 1, 24, fillColor);
-                leftLine(x, y + 13, fillColor);
+                topLine(x + 1, y - 1, strokeColor);
+                rightLine(x + 12, y, strokeColor);
+                middleLine(x + 1, y + 11.5, strokeColor);
+                leftLine(x, y, strokeColor);
+                rightLine(x + 12, y + 13, strokeColor);
+                bottomLine(x + 1, y + 24, strokeColor);
+                leftLine(x, y + 13, strokeColor);
                 break;
             case 9:
-                topLine(x + 1, y - 1, fillColor);
-                leftLine(x, y, fillColor);
-                middleLine(x + 1, y + 11.5, fillColor);
-                rightLine(x + 12, y, fillColor);
-                rightLine(x + 12, y + 13, fillColor);
-                bottomLine(x + 1, 24, fillColor);
+                topLine(x + 1, y - 1, strokeColor);
+                leftLine(x, y, strokeColor);
+                middleLine(x + 1, y + 11.5, strokeColor);
+                rightLine(x + 12, y, strokeColor);
+                rightLine(x + 12, y + 13, strokeColor);
+                bottomLine(x + 1, y + 24, strokeColor);
                 break;
         }
     }
 
-    leftLine(12, 12, '#000');
-    leftLine(12, 25, '#000');
-    rightLine(24, 12, '#000');
-    rightLine(24, 25, '#000');
-    topLine(13, 11, '#000');
-    middleLine(13, 23.5, '#000');
-    bottomLine(13, 36, '#000');
+    function initScoreBoard() {
+        paper.text(SCORE_POSITION.X - 50, SCORE_POSITION.Y + 15, 'Score').attr({ 'font-size': 25 });
+        paper.text(HIGH_SCORE_POSITION.X - 75, HIGH_SCORE_POSITION.Y + 15, 'High score').attr({ 'font-size': 25 });
+        for (var i = 0; i < 5; i++) {
+            visualizeDigits(8, SCORE_POSITION.X + 5 + (i * 15), SCORE_POSITION.Y + 4, '#DDD');
+            visualizeDigits(8, HIGH_SCORE_POSITION.X + 5 + (i * 15), HIGH_SCORE_POSITION.Y + 4, '#DDD');
+        }
+    }
+
+    initScoreBoard();
 }
