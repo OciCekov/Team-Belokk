@@ -330,7 +330,7 @@ function sortRow(row, dir) {
 
 
 function calculateRowSums(row, dir) {
-    var ready = false;
+    //var ready = false;
 
     //while (ready == false) {
 
@@ -384,6 +384,7 @@ function fixRowElementsIndex(row, dir, coli, nameprefix) {
 
 
 function addRandomCellToGameLayer() {
+
     var randCell = randomCell(grid);
 
     var gRow = grid[randCell].row;
@@ -403,7 +404,7 @@ function createAnimationsList(oldRow, newRow, dir) {
 
 }
 
-function moveAllBoxesInDir(dir) {
+function moveBoxesInDir(dir) {
 
     var orientation = (dir === 'down' || dir === 'up') ? 'v' : 'h';
     //var corientation=(dir=='down' || dir=='up')?'h':'v';
@@ -446,22 +447,22 @@ $(document).ready(function () {
 
             case UP_ARROW:
 
-                moveAllBoxesInDir('up');
+                moveBoxesInDir('up');
                 break;
 
             case DOWN_ARROW:
 
-                moveAllBoxesInDir('down');
+                moveBoxesInDir('down');
                 break;
 
             case RIGHT_ARROW:
 
-                moveAllBoxesInDir('right');
+                moveBoxesInDir('right');
                 break;
 
             case LEFT_ARROW:
 
-                moveAllBoxesInDir('left');
+                moveBoxesInDir('left');
                 break;
         }
     });
