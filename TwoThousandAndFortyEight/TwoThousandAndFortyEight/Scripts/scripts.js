@@ -22,7 +22,7 @@ var ANIMATION_STEP_IN_PIXELS = 40;
 var commandCallHeap = [];
 
 function valueToColor(val) {
-    switch (val){
+    switch (val) {
         case 2: return "#9EBCD9";
         case 4: return "#6E9BC6";
         case 8: return "#3D79B3";
@@ -40,8 +40,9 @@ function valueToColor(val) {
 
 function createBox(bx, by, bwidth, bheight, fillc, bval) {
 
+    var rectidPostfix = bx + '-' + by;
     var rectangle = new Kinetic.Rect({
-        name: 'rect',
+        id: 's-' + rectidPostfix,
         value: bval,
         cornerRadius: 5,
         x: bx,
@@ -55,11 +56,14 @@ function createBox(bx, by, bwidth, bheight, fillc, bval) {
         return rectangle;
     }
 
+    rectangle.attrs.id = 'a-' + rectidPostfix;
+
     return {
         rect: rectangle,
         text: new Kinetic.Text({
             x: bx,
-            y: by + TEXT_OFFSET,
+            y: by + 33,
+            id: 'at-' + rectidPostfix,
             width: bwidth,
             height: bheight,
             align: "center",
@@ -163,10 +167,10 @@ stage.add(gameLayer);
 //start game loop
 var gameInterval = setInterval(function () { gameLoop() }, 1000);
 
-var moves = logic.moveUp();
+//var moves = logic.moveUp();
 
 function gameLoop() {
-    if (!logic.hasGameEnded()) {      
+    if (!logic.hasGameEnded()) {
         while (commandCallHeap.length !== 0) {
             executeCommand(commandCallHeap[0]);
             commandCallHeap.splice(0, 1);
@@ -179,35 +183,150 @@ function gameLoop() {
     }
 }
 
+function AnimateBoxesMovement(command, moves) {
+
+    var stopAnim = false;
+    console.log(moves);
+    var movementAnim = new Kinetic.Animation(function (frame) {
+        var animationHasToEnd = true;
+
+        for (var i = 0; i < moves.length; i++) {
+
+            var move = moves[i];
+
+            //construct id for search
+
+            var scol = move.first.col;
+            var srow = move.first.row;
+
+            var newcol = move.result.col;
+            var newrow = move.result.row;
+
+            var sx = 16 * (scol + 1) + scol * RECT_WIDTH;
+            var sy = 16 * (srow + 1) + srow * RECT_HEIGHT;
+
+            var newx = 16 * (newcol + 1) + newcol * RECT_WIDTH;
+            var newy = 16 * (newrow + 1) + newrow * RECT_HEIGHT;
+
+            var rectid = 'a-' + sx + '-' + sy;
+            var textid = 'at-' + sx + '-' + sy;
+
+            //output some stuff for debuging
+            console.log(rectid);
+            console.log(textid);
+            console.log('go to-->' + newx + '-' + newy);
+
+            //get graphical objects from the game layer
+            var rectGraphic = gameLayer.children.filter(function (obj) {
+                return obj.attrs.id === rectid;
+            })[0];
+
+            var textGraphic = gameLayer.children.filter(function (obj) {
+                return obj.attrs.id === textid;
+            })[0];
+
+            switch (command) {
+
+                case 'UP'://moving up
+                    if (rectGraphic.attrs.y > newy + ANIMATION_STEP_IN_PIXELS) {
+                        rectGraphic.attrs.y -= ANIMATION_STEP_IN_PIXELS;
+                        textGraphic.attrs.y -= ANIMATION_STEP_IN_PIXELS;
+                        animationHasToEnd = false;
+                    }
+                    else {
+                        rectGraphic.attrs.y = newy;
+                        textGraphic.attrs.y = newy + TEXT_OFFSET;
+                    }
+                    break;
+
+                case 'DOWN'://moving down
+                    if (rectGraphic.attrs.y < newy - ANIMATION_STEP_IN_PIXELS) {
+                        rectGraphic.attrs.y += ANIMATION_STEP_IN_PIXELS;
+                        textGraphic.attrs.y += ANIMATION_STEP_IN_PIXELS;
+                        animationHasToEnd = false;
+                    }
+                    else {
+                        rectGraphic.attrs.y = newy;
+                        textGraphic.attrs.y = newy + TEXT_OFFSET;
+                    }
+                    break;
+
+                case 'RIGHT'://moving right
+                    if (rectGraphic.attrs.x < newx - ANIMATION_STEP_IN_PIXELS) {
+                        rectGraphic.attrs.x += ANIMATION_STEP_IN_PIXELS;
+                        textGraphic.attrs.x += ANIMATION_STEP_IN_PIXELS;
+                        animationHasToEnd = false;
+                    }
+                    else {
+                        rectGraphic.attrs.x = newx;
+                        textGraphic.attrs.x = newx;
+                    }
+                    break;
+
+                case 'LEFT'://moving left
+                    if (rectGraphic.attrs.x > newx + ANIMATION_STEP_IN_PIXELS) {
+                        rectGraphic.attrs.x -= ANIMATION_STEP_IN_PIXELS;
+                        textGraphic.attrs.x -= ANIMATION_STEP_IN_PIXELS;
+                        animationHasToEnd = false;
+                    }
+                    else {
+                        rectGraphic.attrs.x = newx;
+                        textGraphic.attrs.x = newx;
+                    }
+                    break;
+            }
+
+        }
+
+        if (animationHasToEnd) {
+
+            //output some stuff for debuging
+            console.log('- - -');
+
+            rectGraphic.attrs.id = 'a-' + newx + '-' + newy;
+            textGraphic.attrs.id = 'at-' + newx + '-' + newy;
+
+            console.log(rectGraphic.attrs.id);
+            console.log(textGraphic.attrs.id);
+
+            movementAnim.stop();
+        }
+
+    }, gameLayer);
+
+    movementAnim.start();
+
+}
+
 function executeCommand(command) {
+    var moves;
+
     switch (command) {
         case 'UP':
-            moveBoxesUpward(moves);
-            //mergeBoxes();
-        break;
+            moves = logic.moveUp();
+            break;
 
         case 'DOWN':
-            //moveBoxesDownward(moves);
-            //mergeBoxes();
+            moves = logic.moveDown();
             break;
 
         case 'RIGHT':
-            //moveBoxesDownToRight(moves);
-            //mergeBoxes();
+            moves = logic.moveRight();
             break;
 
         case 'LEFT':
-            //moveBoxesDownToLeft(moves);
-            //mergeBoxes();
+            moves = logic.moveLeft();
             break;
 
         default:
             //TODO make exception;
             break;
     }
+
+    AnimateBoxesMovement(command, moves);
 }
 
-function moveBoxesUpward(moves) {
+/*function moveBoxesUpward(moves) {
     if (!moves) return;
 
     var anim = new Kinetic.Animation(function (frame) {
@@ -244,7 +363,7 @@ function moveBoxesUpward(moves) {
 
     //mergeBoxes();
 }
-
+*/
 /*function move(where) {
 
 }*/
@@ -256,7 +375,7 @@ stage.add(layer);*/
 
 //key events
 window.onload = function () {
-    document.addEventListener('keydown', function(event) {
+    document.addEventListener('keydown', function (event) {
         switch (event.keyCode) {
             case UP_ARROW:
                 commandCallHeap.push('UP');
@@ -274,5 +393,5 @@ window.onload = function () {
                 commandCallHeap.push('LEFT');
                 break;
         }
-    });  
+    });
 }
