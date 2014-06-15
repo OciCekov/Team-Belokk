@@ -180,7 +180,7 @@ scoreBoard.initScore();
 scoreBoard.reset();
 
 //start game loop
-var gameInterval = setInterval(function () { gameLoop() }, 1000);
+var gameInterval = setInterval(function () { gameLoop() }, 200);
 
 function gameLoop() {
     while (commandCallHeap.length !== 0) {
