@@ -5,14 +5,21 @@
     <script src="Scripts/kinetic-v4.4.3.js"></script>
     <script src="Scripts/jquery-2.1.1.min.js"></script>
     <script src="Scripts/raphael-min.js"></script>
+    <link href="Styles/web%20fonts/clearsans_bold_macroman/stylesheet.css" rel="stylesheet" />
+    <link href="Styles/web%20fonts/clearsans_regular_macroman/stylesheet.css" rel="stylesheet" />
+
     <style>
-        #game-container {
-            margin-top: 50px;
-        }	
+        body {
+            text-align: center;
+        }
     </style>
 </head>
 	<body>
-			<div id="game-container"></div>
-			<script src="Scripts/testingsomestuff.js" type="text/javascript"></script>
+        <div id="paper"></div>
+		<div id="game-container"></div>
+		<script src="Scripts/testingsomestuff.js" type="text/javascript"></script>
+        <script>
+            $('canvas').css('margin-left', '-250px');
+        </script>
 	</body>	
 </html>

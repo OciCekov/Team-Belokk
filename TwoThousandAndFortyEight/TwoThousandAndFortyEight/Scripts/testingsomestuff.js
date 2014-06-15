@@ -20,7 +20,7 @@ var ACTIVE_FONT_COLOR = "#FFFFFF";
 
 var ANIMATION_STEP_IN_PIXELS = 60;
 
-var SCORE_POSITION = { X: 150, Y: 10 }
+var SCORE_POSITION = { X: 100, Y: 10 }
 var HIGH_SCORE_POSITION = { X: 400, Y: 10 }
 var SCORE_WIDTH = 80;
 var SCORE_HEIGHT = 30;
@@ -89,8 +89,7 @@ function createBox(bx, by, bwidth, bheight, fillc, bval, birthid) {
             align: "center",
             text: bval,
             fontSize: 48,
-            fontFamily: "Clear Sans",
-            fontStyle: "bold",
+            fontFamily: 'clear_sansbold',
             fill: ACTIVE_FONT_COLOR,
             opacity: 100
         })
@@ -169,10 +168,10 @@ for (var j = 0; j < 2; j++) {
 
 updateGameLayer();
 
-var score = 1320;
+var score = 0;
 var highScore = 0;
 
-var paper = Raphael(0, 0, 500, 40);
+var paper = Raphael('paper', 500, 50);
 
 var scoreRect = paper.rect(SCORE_POSITION.X, SCORE_POSITION.Y, SCORE_WIDTH, SCORE_HEIGHT);
 scoreRect.attr({
@@ -837,8 +836,8 @@ function visualizeScoreBoard() {
     }
 
     function initScoreBoard() {
-        paper.text(SCORE_POSITION.X - 50, SCORE_POSITION.Y + 15, 'Score').attr({ 'font-size': 25 });
-        paper.text(HIGH_SCORE_POSITION.X - 75, HIGH_SCORE_POSITION.Y + 15, 'High score').attr({ 'font-size': 25 });
+        paper.text(SCORE_POSITION.X - 50, SCORE_POSITION.Y + 15, 'Score').attr({ 'font-size': 25, 'font-family': 'clear_sansregular' });
+        paper.text(HIGH_SCORE_POSITION.X - 75, HIGH_SCORE_POSITION.Y + 15, 'High score').attr({ 'font-size': 25, 'font-family': 'clear_sansregular' });
         for (var i = 0; i < 5; i++) {
             visualizeDigits(8, SCORE_POSITION.X + 65 - (i * 15), SCORE_POSITION.Y + 4, '#DDD');
             visualizeDigits(8, HIGH_SCORE_POSITION.X + 65 - (i * 15), HIGH_SCORE_POSITION.Y + 4, '#DDD');
@@ -861,6 +860,23 @@ function visualizeScoreBoard() {
     function visualizeScore() {
         var currentScore = score;
         var i = 0;
+        var colors = [
+            '#DDD',
+            '#CCC',
+            '#BBB',
+            '#AAA',
+            '#999',
+            '#888',
+            '#777',
+            '#666',
+            '#555',
+            '#444',
+            '#333',
+            '#222',
+            '#111',
+            '#000'
+        ];
+
         while (currentScore > 0) {
             var digit = currentScore % 10;
             visualizeDigits(digit, SCORE_POSITION.X + 65 - (i * 15), SCORE_POSITION.Y + 4, '#000');

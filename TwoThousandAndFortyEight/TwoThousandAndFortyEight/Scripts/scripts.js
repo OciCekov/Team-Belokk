@@ -183,112 +183,157 @@ function gameLoop() {
     }
 }
 
+function moveObjFrame(obj, fromRow, fromCol, toRow, toCol) {
+
+    var add = ((obj.attrs.text !== undefined) ? 33 : 0);
+
+    var from = { x: 16 * (fromCol + 1) + fromCol * RECT_WIDTH, y: (16 * (fromRow + 1) + fromRow * RECT_HEIGHT) + add };
+    var to = { x: 16 * (toCol + 1) + toCol * RECT_WIDTH, y: (16 * (toRow + 1) + toRow * RECT_HEIGHT) + add };
+
+    if (Math.abs(obj.attrs.x - to.x) < ANIMATION_STEP_IN_PIXELS) { //&& (Math.abs(obj.attrs.y - to.y) < ANIMATION_STEP_IN_PIXELS)) {
+        obj.attrs.x = to.x;
+    }
+    else if (to.x > from.x) {
+        obj.attrs.x += ANIMATION_STEP_IN_PIXELS;
+        return false;
+    }
+    else if (from.x > to.x) {
+        obj.attrs.x -= ANIMATION_STEP_IN_PIXELS;
+        return false;
+    }
+
+    if ((Math.abs(obj.attrs.y - to.y) < ANIMATION_STEP_IN_PIXELS)) { //&& (Math.abs(obj.attrs.y - to.y) < ANIMATION_STEP_IN_PIXELS)) {
+        obj.attrs.y = to.y;
+    }
+    else if (to.y > from.y) {
+        obj.attrs.y += ANIMATION_STEP_IN_PIXELS;
+        return false;
+    }
+    else if (from.y > to.y) {
+        obj.attrs.y -= ANIMATION_STEP_IN_PIXELS;
+        return false;
+    }
+
+    if ((Math.abs(obj.attrs.x - to.x) < ANIMATION_STEP_IN_PIXELS) && (Math.abs(obj.attrs.y - to.y) < ANIMATION_STEP_IN_PIXELS))
+    {
+        return true;
+    }
+}
+
 function AnimateBoxesMovement(command, moves) {
 
     var stopAnim = false;
-    console.log(moves);
+	
+    //console.log(moves);
     var movementAnim = new Kinetic.Animation(function (frame) {
-        var animationHasToEnd = true;
-
+        var animationHasToEnd = true;		
+		var finshedElements = moves.length;
+		
         for (var i = 0; i < moves.length; i++) {
 
             var move = moves[i];
+			
+			if (move.first === null && move.second === null)
+			{
+				continue;
+			}
 
             //construct id for search
+			if (move.first) {
+				var scol = move.first.col;
+				var srow = move.first.row;
 
-            var scol = move.first.col;
-            var srow = move.first.row;
+				var newcol = move.result.col;
+				var newrow = move.result.row;
 
-            var newcol = move.result.col;
-            var newrow = move.result.row;
+				var sx = 16 * (scol + 1) + scol * RECT_WIDTH;
+				var sy = 16 * (srow + 1) + srow * RECT_HEIGHT;
 
-            var sx = 16 * (scol + 1) + scol * RECT_WIDTH;
-            var sy = 16 * (srow + 1) + srow * RECT_HEIGHT;
+				var newx = 16 * (newcol + 1) + newcol * RECT_WIDTH;
+				var newy = 16 * (newrow + 1) + newrow * RECT_HEIGHT;
 
-            var newx = 16 * (newcol + 1) + newcol * RECT_WIDTH;
-            var newy = 16 * (newrow + 1) + newrow * RECT_HEIGHT;
+				var rectid = 'a-' + sx + '-' + sy;
+				var textid = 'at-' + sx + '-' + sy;
 
-            var rectid = 'a-' + sx + '-' + sy;
-            var textid = 'at-' + sx + '-' + sy;
+				var rectGraphic = gameLayer.children.filter(function (obj) {
+					return obj.attrs.id === rectid;
+				})[0];
 
-            //output some stuff for debuging
-            console.log(rectid);
-            console.log(textid);
-            console.log('go to-->' + newx + '-' + newy);
+				var textGraphic = gameLayer.children.filter(function (obj) {
+					return obj.attrs.id === textid;
+				})[0];
+				
+				if (!rectGraphic) {
+					alert("WTF");
+				}
 
-            //get graphical objects from the game layer
-            var rectGraphic = gameLayer.children.filter(function (obj) {
-                return obj.attrs.id === rectid;
-            })[0];
+				var movedRect=moveObjFrame(rectGraphic, srow, scol, newrow, newcol);
+				var movedText=moveObjFrame(textGraphic,  srow, scol, newrow, newcol);
+				
+				if(movedRect && movedText)
+				{
+					rectGraphic.attrs.id = 'a-' + newx + '-' + newy;
+					textGraphic.attrs.id = 'at-' + newx + '-' + newy;
+					move.first = null;
+					if (!move.second) finshedElements--;
+				}
+				else
+				{
+					animationHasToEnd=false;
+				}
+			}
+			
+			// second
+			if (move.second) {
+				var scol = move.second.col;
+				var srow = move.second.row;
 
-            var textGraphic = gameLayer.children.filter(function (obj) {
-                return obj.attrs.id === textid;
-            })[0];
+				var newcol = move.result.col;
+				var newrow = move.result.row;
 
-            switch (command) {
+				var sx = 16 * (scol + 1) + scol * RECT_WIDTH;
+				var sy = 16 * (srow + 1) + srow * RECT_HEIGHT;
 
-                case 'UP'://moving up
-                    if (rectGraphic.attrs.y > newy + ANIMATION_STEP_IN_PIXELS) {
-                        rectGraphic.attrs.y -= ANIMATION_STEP_IN_PIXELS;
-                        textGraphic.attrs.y -= ANIMATION_STEP_IN_PIXELS;
-                        animationHasToEnd = false;
-                    }
-                    else {
-                        rectGraphic.attrs.y = newy;
-                        textGraphic.attrs.y = newy + TEXT_OFFSET;
-                    }
-                    break;
+				var newx = 16 * (newcol + 1) + newcol * RECT_WIDTH;
+				var newy = 16 * (newrow + 1) + newrow * RECT_HEIGHT;
 
-                case 'DOWN'://moving down
-                    if (rectGraphic.attrs.y < newy - ANIMATION_STEP_IN_PIXELS) {
-                        rectGraphic.attrs.y += ANIMATION_STEP_IN_PIXELS;
-                        textGraphic.attrs.y += ANIMATION_STEP_IN_PIXELS;
-                        animationHasToEnd = false;
-                    }
-                    else {
-                        rectGraphic.attrs.y = newy;
-                        textGraphic.attrs.y = newy + TEXT_OFFSET;
-                    }
-                    break;
+				var rectid = 'a-' + sx + '-' + sy;
+				var textid = 'at-' + sx + '-' + sy;
 
-                case 'RIGHT'://moving right
-                    if (rectGraphic.attrs.x < newx - ANIMATION_STEP_IN_PIXELS) {
-                        rectGraphic.attrs.x += ANIMATION_STEP_IN_PIXELS;
-                        textGraphic.attrs.x += ANIMATION_STEP_IN_PIXELS;
-                        animationHasToEnd = false;
-                    }
-                    else {
-                        rectGraphic.attrs.x = newx;
-                        textGraphic.attrs.x = newx;
-                    }
-                    break;
+				var rectGraphic = gameLayer.children.filter(function (obj) {
+					return obj.attrs.id === rectid;
+				})[0];
 
-                case 'LEFT'://moving left
-                    if (rectGraphic.attrs.x > newx + ANIMATION_STEP_IN_PIXELS) {
-                        rectGraphic.attrs.x -= ANIMATION_STEP_IN_PIXELS;
-                        textGraphic.attrs.x -= ANIMATION_STEP_IN_PIXELS;
-                        animationHasToEnd = false;
-                    }
-                    else {
-                        rectGraphic.attrs.x = newx;
-                        textGraphic.attrs.x = newx;
-                    }
-                    break;
-            }
+				var textGraphic = gameLayer.children.filter(function (obj) {
+					return obj.attrs.id === textid;
+				})[0];
+				
+				if (!rectGraphic) {
+					alert("WTF");
+				}
 
+				var movedRect=moveObjFrame(rectGraphic, srow, scol, newrow, newcol);
+				var movedText=moveObjFrame(textGraphic,  srow, scol, newrow, newcol);
+				
+				if (movedRect && movedText)
+				{
+					rectGraphic.attrs.id = 'a-' + newx + '-' + newy;
+					textGraphic.attrs.id = 'at-' + newx + '-' + newy;
+					move.second = null;
+					finshedElements--;
+				}
+				else
+				{
+					animationHasToEnd=false;
+				}
+			}
         }
 
-        if (animationHasToEnd) {
+        if (finshedElements == 0) {
 
             //output some stuff for debuging
-            console.log('- - -');
-
-            rectGraphic.attrs.id = 'a-' + newx + '-' + newy;
-            textGraphic.attrs.id = 'at-' + newx + '-' + newy;
-
-            console.log(rectGraphic.attrs.id);
-            console.log(textGraphic.attrs.id);
-
+            //console.log('- - -');            
+			//alert("DFVD");
             movementAnim.stop();
         }
 
