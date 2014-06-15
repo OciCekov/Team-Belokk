@@ -340,6 +340,7 @@ function sortRow(row, dir) {
 }
 
 
+
 function calculateRowSums(row, dir) {
     //var ready = false;
 
@@ -358,7 +359,9 @@ function calculateRowSums(row, dir) {
         if (cEl !== null && nEl !== null) {
             if ((cEl.rect.attrs.value | 0) === (nEl.rect.attrs.value | 0)) {
 
-                row[elInd].obj.rect.attrs.value = (row[elInd].obj.rect.attrs.value | 0) * 2;
+                var newValue=(row[elInd].obj.rect.attrs.value | 0) * 2;
+                row[elInd].obj.rect.attrs.value = newValue;
+                moveScore += newValue;
                 birthId++;
                 row[elInd].obj.rect.attrs.birthid = '_' + birthId;
                 row[elInd + sign].obj = null;
@@ -628,8 +631,12 @@ function createAnimationsListFromGridDiffs(oldGrid, newGrid) {
     return animations;
 }
 
+var moveScore = 0;
+
+
 function moveBoxesInDir(dir) {
 
+    moveScore = 0;
     var orientation = (dir === 'down' || dir === 'up') ? 'v' : 'h';
     //var corientation=(dir=='down' || dir=='up')?'h':'v';
 
@@ -673,8 +680,13 @@ function moveBoxesInDir(dir) {
 	addRandomCellToGameLayer();
 	
 	//stage.add(gameLayer);
-    updateGameLayer(animations);
+	updateGameLayer(animations);
+    //update score
+	//console.log();
+	scoreBoard.scoreAddition(moveScore);
+	scoreBoard.visualize();
 }
+var scoreBoard = new ScoreBoard();
 
 //input handling
 $(document).ready(function () {
@@ -710,7 +722,7 @@ $(document).ready(function () {
         }
     });
 
-    var scoreBoard = new ScoreBoard();
+
     scoreBoard.initScore();
     scoreBoard.reset();
 });
