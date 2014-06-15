@@ -233,63 +233,100 @@ function AnimateBoxesMovement(command, moves) {
 
             var move = moves[i];
 			
-			if (move === null)
+			if (move.first === null && move.second === null)
 			{
 				continue;
 			}
 
             //construct id for search
+			if (move.first) {
+				var scol = move.first.col;
+				var srow = move.first.row;
 
-            var scol = move.first.col;
-            var srow = move.first.row;
+				var newcol = move.result.col;
+				var newrow = move.result.row;
 
-            var newcol = move.result.col;
-            var newrow = move.result.row;
+				var sx = 16 * (scol + 1) + scol * RECT_WIDTH;
+				var sy = 16 * (srow + 1) + srow * RECT_HEIGHT;
 
-            var sx = 16 * (scol + 1) + scol * RECT_WIDTH;
-            var sy = 16 * (srow + 1) + srow * RECT_HEIGHT;
+				var newx = 16 * (newcol + 1) + newcol * RECT_WIDTH;
+				var newy = 16 * (newrow + 1) + newrow * RECT_HEIGHT;
 
-            var newx = 16 * (newcol + 1) + newcol * RECT_WIDTH;
-            var newy = 16 * (newrow + 1) + newrow * RECT_HEIGHT;
+				var rectid = 'a-' + sx + '-' + sy;
+				var textid = 'at-' + sx + '-' + sy;
 
-            var rectid = 'a-' + sx + '-' + sy;
-            var textid = 'at-' + sx + '-' + sy;
+				var rectGraphic = gameLayer.children.filter(function (obj) {
+					return obj.attrs.id === rectid;
+				})[0];
 
-            //output some stuff for debuging
-            //console.log(rectid);
-            //console.log(textid);
-            //console.log('go to-->' + newx + '-' + newy);
+				var textGraphic = gameLayer.children.filter(function (obj) {
+					return obj.attrs.id === textid;
+				})[0];
+				
+				if (!rectGraphic) {
+					alert("WTF");
+				}
 
-            //get graphical objects from the game layer
-            var rectGraphic = gameLayer.children.filter(function (obj) {
-                return obj.attrs.id === rectid;
-            })[0];
-
-            var textGraphic = gameLayer.children.filter(function (obj) {
-                return obj.attrs.id === textid;
-            })[0];
+				var movedRect=moveObjFrame(rectGraphic, srow, scol, newrow, newcol);
+				var movedText=moveObjFrame(textGraphic,  srow, scol, newrow, newcol);
+				
+				if(movedRect && movedText)
+				{
+					rectGraphic.attrs.id = 'a-' + newx + '-' + newy;
+					textGraphic.attrs.id = 'at-' + newx + '-' + newy;
+					move.first = null;
+					if (!move.second) finshedElements--;
+				}
+				else
+				{
+					animationHasToEnd=false;
+				}
+			}
 			
-			if (!rectGraphic) {
-				alert("WTF");
-			}
+			// second
+			if (move.second) {
+				var scol = move.second.col;
+				var srow = move.second.row;
 
-			var movedRect=moveObjFrame(rectGraphic, srow, scol, newrow, newcol);
-			var movedText=moveObjFrame(textGraphic,  srow, scol, newrow, newcol);
-            
-			if(movedRect && movedText)
-			{
-				rectGraphic.attrs.id = 'a-' + newx + '-' + newy;
-				textGraphic.attrs.id = 'at-' + newx + '-' + newy;
-				moves[i] = null;
-				finshedElements--;
+				var newcol = move.result.col;
+				var newrow = move.result.row;
+
+				var sx = 16 * (scol + 1) + scol * RECT_WIDTH;
+				var sy = 16 * (srow + 1) + srow * RECT_HEIGHT;
+
+				var newx = 16 * (newcol + 1) + newcol * RECT_WIDTH;
+				var newy = 16 * (newrow + 1) + newrow * RECT_HEIGHT;
+
+				var rectid = 'a-' + sx + '-' + sy;
+				var textid = 'at-' + sx + '-' + sy;
+
+				var rectGraphic = gameLayer.children.filter(function (obj) {
+					return obj.attrs.id === rectid;
+				})[0];
+
+				var textGraphic = gameLayer.children.filter(function (obj) {
+					return obj.attrs.id === textid;
+				})[0];
+				
+				if (!rectGraphic) {
+					alert("WTF");
+				}
+
+				var movedRect=moveObjFrame(rectGraphic, srow, scol, newrow, newcol);
+				var movedText=moveObjFrame(textGraphic,  srow, scol, newrow, newcol);
+				
+				if (movedRect && movedText)
+				{
+					rectGraphic.attrs.id = 'a-' + newx + '-' + newy;
+					textGraphic.attrs.id = 'at-' + newx + '-' + newy;
+					move.second = null;
+					finshedElements--;
+				}
+				else
+				{
+					animationHasToEnd=false;
+				}
 			}
-			else
-			{
-				animationHasToEnd=false;
-			}
-			//rectGraphic.attrs.id ='a-' + rectGraphic.attrs.x+'-'+rectGraphic.attrs.y;			  
-			//textGraphic.attrs.x = newx;
-			//textGraphic.attrs.id ='at-' + textGraphic.attrs.x+'-'+textGraphic.attrs.y;
         }
 
         if (finshedElements == 0) {
