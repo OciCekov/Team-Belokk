@@ -18,6 +18,11 @@ var TEXT_OFFSET = 33;
 
 var ANIMATION_STEP_IN_PIXELS = 40;
 
+var SCORE_POSITION = { X: 100, Y: 10 }
+var HIGH_SCORE_POSITION = { X: 400, Y: 10 }
+var SCORE_WIDTH = 80;
+var SCORE_HEIGHT = 30;
+
 //functions
 var commandCallHeap = [];
 
@@ -113,6 +118,10 @@ function generateNewElement(occupationMatrix) {
     logic.setElement(gRow, gCol, 1);
 }
 
+var scoreBoard = new ScoreBoard();
+
+var paper = Raphael('score-container', 500, 50);
+
 //init game stage
 var stage = new Kinetic.Stage({
     container: 'game-container',
@@ -143,23 +152,30 @@ var gameLayer = new Kinetic.Layer();
 
 //init main logic
 var logic = new MainLogic(4, 4, 11);
-logic.reset();
+var score = logic.score;
+var highScore = 0;
 
-for (var j = 0; j < 2; j++) {
-    generateNewElement(logic.getOccupationMatrix());
+function gameInit()
+{
+    logic.reset();
+    gameLayer.removeChildren();
+    for (var j = 0; j < 2; j++) {
+        generateNewElement(logic.getOccupationMatrix());
+    }
+    stage.add(gameLayer);
 }
-stage.add(gameLayer);
 
+gameInit();
 
 //start game loop
 var gameInterval = setInterval(function () { gameLoop() }, 1000);
 
 function gameLoop() {
-        while (commandCallHeap.length !== 0) {
-            executeCommand(commandCallHeap[0]);
-            commandCallHeap.splice(0, 1);
-            //console.log(commandCallHeap);
-        }
+    while (commandCallHeap.length !== 0) {
+        executeCommand(commandCallHeap[0]);
+        commandCallHeap.splice(0, 1);
+        //console.log(commandCallHeap);
+    }
 }
 
 function moveObjFrame(obj, fromRow, fromCol, toRow, toCol) {
@@ -409,6 +425,9 @@ function executeCommand(command) {
     }
 
     AnimateBoxesMovement(command, moves);
+
+    score = logic.score;
+    scoreBoard.visualize();
 }
 
 function gameOver() {
@@ -441,5 +460,13 @@ window.onload = function () {
                 commandCallHeap.push('LEFT');
                 break;
         }
+    });
+
+    scoreBoard.initScore();
+    scoreBoard.reset();
+
+    $('#new-game').on('click', function () {
+        scoreBoard.reset();
+        gameInit();
     });
 }
