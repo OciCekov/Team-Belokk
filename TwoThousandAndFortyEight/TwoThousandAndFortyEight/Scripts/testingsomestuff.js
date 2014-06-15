@@ -439,6 +439,52 @@ function moveObjFrame(obj, fromRow, fromCol, toRow, toCol) {
 
 var interupt = false;
 
+var startTime;
+var endTime;
+
+function testFPS()
+{	
+	
+	startTime=Date.now();
+	 var anim = new Kinetic.Animation(function (frame) {
+		
+		 var time = frame.time
+
+        if (!lastTime) {
+            lastTime = time;
+        }
+
+        var elapsed = time - lastTime;
+
+        if (elapsed >= frameDelay) {
+		
+			var animIsDone=true;
+			for(var i=0;i<backgroundLayer.children.length;i++)
+			{			
+				var child=backgroundLayer.children[i];
+				if(child.attrs.x>0)
+				{
+					child.attrs.x--;				
+				}
+			}
+			
+			if(animIsDone)
+			{
+				anim.stop();
+				endTime=Date.now();
+				console.log(endTime-startTime);
+			}
+			
+			lastTime = time;
+		}
+	 },backgroundLayer);
+	 
+	 anim.start();
+}
+
+var lastTime;
+var frameDelay = 16.66;
+
 function playTestingAnimation(animations) {
 
     interupt = true;
@@ -468,9 +514,6 @@ function playTestingAnimation(animations) {
             minimizeObj(element);
         }
     }
-
-    var lastTime;
-    var frameDelay = 16.66;
 
     var anim = new Kinetic.Animation(function (frame) {
 
@@ -534,8 +577,9 @@ function playTestingAnimation(animations) {
                 interupt = false;
                 anim.stop();
             }
+			
+			lastTime = time;
         }
-        lastTime = time;
     }, gameLayer);
 
     anim.start();
@@ -632,9 +676,10 @@ $(document).ready(function () {
         switch (e.keyCode) {
 
             case UP_ARROW:
-
+				testFPS();
+			break;
                 //playTestingAnimation();
-                moveBoxesInDir('up');
+                /*moveBoxesInDir('up');
                 break;
 
             case DOWN_ARROW:
@@ -650,7 +695,7 @@ $(document).ready(function () {
             case LEFT_ARROW:
 
                 moveBoxesInDir('left');
-                break;
+                break;*/
         }
     });
 
