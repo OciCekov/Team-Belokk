@@ -82,6 +82,7 @@
         if (pointer.y === goAway.y) {
             console.log('Not Cool man, not cool');
             hideMainMenu();
+            window.close();
             // $menuCanvas.remove();
             // TODO: stop whatever functions there are, alto, there shouldn't be ani.
         }
