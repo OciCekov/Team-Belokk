@@ -676,10 +676,8 @@ $(document).ready(function () {
         switch (e.keyCode) {
 
             case UP_ARROW:
-				testFPS();
-			break;
                 //playTestingAnimation();
-                /*moveBoxesInDir('up');
+                moveBoxesInDir('up');
                 break;
 
             case DOWN_ARROW:
