@@ -709,18 +709,24 @@ $(document).ready(function () {
                 break;
         }
     });
+
+    var scoreBoard = new ScoreBoard();
+    scoreBoard.initScore();
+    scoreBoard.reset();
 });
 
-function addScore(scoreAddition) {
-    score += scoreAddition;
-    if (highScore < score) {
-        highScore = score;
+function ScoreBoard() {
+    self = this;
+
+    function addScore(scoreAddition) {
+        score += scoreAddition;
+        if (highScore < score) {
+            highScore = score;
+        }
     }
-}
 
-visualizeScoreBoard();
+    self.scoreAddition = addScore;
 
-function visualizeScoreBoard() {
     function leftLine(x, y, strokeColor) {
         var pathArray = ['M', x, y, 'L', x, y + 10, x + 0.5, y + 9.5, x + 0.5, y + 0.5, 'Z'];
         var line = paper.path(pathArray.join(' '));
@@ -844,7 +850,7 @@ function visualizeScoreBoard() {
         }
     }
 
-    initScoreBoard();
+    self.initScore = initScoreBoard;
 
     function resetScore() {
         for (var i = 0; i < 5; i++) {
@@ -853,31 +859,17 @@ function visualizeScoreBoard() {
         }
 
         visualizeDigits(0, SCORE_POSITION.X + 65, SCORE_POSITION.Y + 4, '#000');
+        visualizeDigits(0, HIGH_SCORE_POSITION.X + 65, HIGH_SCORE_POSITION.Y + 4, '#000');
     }
 
-    resetScore();
+    self.reset = resetScore;
 
     function visualizeScore() {
         var currentScore = score;
         var i = 0;
-        var colors = [
-            '#DDD',
-            '#CCC',
-            '#BBB',
-            '#AAA',
-            '#999',
-            '#888',
-            '#777',
-            '#666',
-            '#555',
-            '#444',
-            '#333',
-            '#222',
-            '#111',
-            '#000'
-        ];
 
         while (currentScore > 0) {
+            visualizeDigits(8, SCORE_POSITION.X + 65 - (i * 15), SCORE_POSITION.Y + 4, '#DDD');
             var digit = currentScore % 10;
             visualizeDigits(digit, SCORE_POSITION.X + 65 - (i * 15), SCORE_POSITION.Y + 4, '#000');
             currentScore = parseInt(currentScore / 10);
@@ -888,6 +880,7 @@ function visualizeScoreBoard() {
             var currentHighScore = score;
             var i = 0;
             while (currentHighScore > 0) {
+                visualizeDigits(8, HIGH_SCORE_POSITION.X + 65 - (i * 15), HIGH_SCORE_POSITION.Y + 4, '#DDD');
                 var digit = currentHighScore % 10;
                 visualizeDigits(digit, HIGH_SCORE_POSITION.X + 65 - (i * 15), HIGH_SCORE_POSITION.Y + 4, '#000');
                 currentHighScore = parseInt(currentHighScore / 10);
@@ -896,5 +889,5 @@ function visualizeScoreBoard() {
         }
     }
 
-    visualizeScore();
+    self.visualize = visualizeScore;
 }
