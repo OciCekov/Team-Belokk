@@ -1,4 +1,4 @@
-﻿function MainLogic(fieldSizeX, fieldSizeY) {
+﻿function MainLogic(fieldSizeX, fieldSizeY, maxValue) {
     self = this;
 
     self._initScore = function () {
@@ -29,15 +29,37 @@
         return resultMatrix;
     }
 
+    self.maxMatrixElement = maxValue;
+
+    self.isGameWon = function () {
+        var isGameWon = false;
+        for (var i = 0; i < self.matrix.length; i++) {
+            for (var j = 0; j < self.matrix[i].length; j++) {
+                if (self.matrix[i][j] === self.maxMatrixElement) {
+                    isGameWon = true;
+                    return isGameWon;
+                }
+            }
+        }
+
+        return isGameWon;
+    }
+
     self.hasGameEnded = function () {
         var gameHasEnded = true;
-        for (var i = 0; i < self.matrix.length - 1; i++) {
-            for (var j = 0; j < self.matrix[i].length - 1; j++) {
+        for (var i = 0; i < self.matrix.length; i++) {
+            for (var j = 0; j < self.matrix[i].length; j++) {
                 if (self.matrix[i][j] === 0) {
                     gameHasEnded = false;
                     return gameHasEnded;
-                } else if (self.matrix[i][j] === self.matrix[i + 1][j]
-                        && self.matrix[i][j] === self.matrix[i][j + 1]) {
+                } 
+            }
+        }
+
+        for (var i = 0; i < self.matrix.length - 1; i++) {
+            for (var j = 0; j < self.matrix[i].length - 1; j++) {
+                if (self.matrix[i][j] === self.matrix[i + 1][j]
+                        || self.matrix[i][j] === self.matrix[i][j + 1]) {
                     gameHasEnded = false;
                     return gameHasEnded;
                 }             
@@ -88,6 +110,7 @@
     self.moveRight = function () {
         var result = [];
         for (var row = 0; row < self.matrix.length; row++) {
+            var isMerge = false;
             for (var col = self.matrix[row].length - 1; col >= 0 ; col--) {
                 if (self.matrix[row][col] === 0) {
                     continue;
@@ -96,7 +119,7 @@
                 var move = {};
                 self._setResultElement(move, "first", row, col);
 
-                var isMerge = false;
+                //var isMerge = false;
                 if (col !== 0) {
                     var prevEqualElementCol = col - 1;
                     while (prevEqualElementCol >= 0) {
@@ -140,6 +163,8 @@
                     }
                 }
 
+                if (!move.second) isMerge = false;
+
                 if (move.result) {
                     result.push(move);
                 }
@@ -152,6 +177,7 @@
     self.moveLeft = function () {
         var result = [];
         for (var row = 0; row < self.matrix.length; row++) {
+            var isMerge = false;
             for (var col = 0; col <= self.matrix[row].length - 1; col++) {
                 if (self.matrix[row][col] === 0) {
                     continue;
@@ -160,7 +186,7 @@
                 var move = {};
                 self._setResultElement(move, "first", row, col);
 
-                var isMerge = false;
+                //var isMerge = false;
                 if (col !== self.matrix[row].length - 1) {
                     var prevEqualElementCol = col + 1;
                     while (prevEqualElementCol <= self.matrix[row].length - 1) {
@@ -204,6 +230,8 @@
                     }
                 }
 
+                if (!move.second) isMerge = false;
+
                 if (move.result) {
                     result.push(move);
                 }
@@ -215,7 +243,9 @@
 
     self.moveUp = function () {
         var result = [];
+
         for (var col = 0; col < self.matrix[0].length; col++) {
+            var isMerge = false;
             for (var row = 0; row <= self.matrix.length - 1; row++) {
                 if (self.matrix[row][col] === 0) {
                     continue;
@@ -224,7 +254,7 @@
                 var move = {};
                 self._setResultElement(move, "first", row, col);
 
-                var isMerge = false;
+                //var isMerge = false;
                 if (row !== self.matrix.length - 1) {
                     var prevEqualElementRow = row + 1;
                     while (prevEqualElementRow <= self.matrix.length - 1) {
@@ -271,6 +301,8 @@
                     }
                 }
 
+                if (!move.second) isMerge = false;
+
                 if (move.result) {
                     result.push(move);
                 }
@@ -283,6 +315,7 @@
     self.moveDown = function () {
         var result = [];
         for (var col = 0; col < self.matrix[0].length; col++) {
+            var isMerge = false;
             for (var row = self.matrix.length - 1; row >= 0 ; row--) {
                 if (self.matrix[row][col] === 0) {
                     continue;
@@ -291,7 +324,7 @@
                 var move = {};
                 self._setResultElement(move, "first", row, col);
 
-                var isMerge = false;
+                //var isMerge = false;
                 if (row !== 0) {
                     var prevEqualElementRow = row - 1;
                     while (prevEqualElementRow >= 0) {
@@ -334,6 +367,8 @@
                         self._setResultElement(move, "result", nextFreeRow, col);
                     }
                 }
+
+                if (!move.second) isMerge = false;
 
                 if (move.result) {
                     result.push(move);
