@@ -22,6 +22,7 @@
     var MENU_TOP_BORDER = 200;
     var MENU_BOTTOM_BORDER = 400;
     var BG_MENU_TILE_COLOR = '#9EBCD9';
+    var ANIMATION_DELAY = 500;
 
     function MenuItem(menuX, menuY, label) {
 
@@ -74,7 +75,8 @@
         }
         if (pointer.y === goAway.y) {
             console.log('Not Cool man, not cool');
-            $menuCanvas.remove();
+            hideMainMenu();
+            // $menuCanvas.remove();
             // TODO: stop whatever functions there are, alto, there shouldn't be ani.
         }
     }
@@ -88,19 +90,25 @@
 
     function showAboutWindow() {
         hideMainMenu();
-        $('.about-us')
-            .fadeIn('duration: 5000')
-            .css({
-                'position': 'absolute',
-                'background-color': BG_COLOR,
-                'border-radius': '5px',
-                'width': STAGE_WIDTH,
-                'height': STAGE_HEIGHT
-            }).append("<p> A story should be in here, but I still don't know it</p>")
-            .css({
-                'color': BG_MENU_TILE_COLOR,
-                'font-family': 'Comic sans ms'
-            });
+        setTimeout(function () {
+            $('.about-us')
+                .fadeIn('duration: 5000')
+                .css({
+                    'position': 'absolute',
+                    'background-color': BG_COLOR,
+                    'border-radius': '5px',
+                    'width': STAGE_WIDTH,
+                    'height': STAGE_HEIGHT
+                }).append("<p> A story should be in here, but I still don't know it</p>")
+                .css({
+                    'color': BG_MENU_TILE_COLOR,
+                    'font-family': 'Comic sans ms'
+                })
+        }, ANIMATION_DELAY)
+    }
+
+    function delayMenuRemove(time) {
+        setTimeout($menuCanvas.remove, time);
     }
 
     function hideMainMenu() {
@@ -108,10 +116,9 @@
         $menuCanvas
             .animate({
                 opacity: 0.25,
-                left: "+=50",
                 height: "toggle"
-            }, 5000);
-           // .remove(); // this fuck's up the animation, need to figure out something.
+            }, ANIMATION_DELAY);
+        delayMenuRemove(ANIMATION_DELAY);
     }
 
     document.body.addEventListener('keydown', function (ev) {
