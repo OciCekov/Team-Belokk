@@ -66,6 +66,16 @@
             }
         }
 
+        for (var i = 1; i < self.matrix.length; i++) {
+            for (var j = 1; j < self.matrix[i].length; j++) {
+                if (self.matrix[i][j] === self.matrix[i - 1][j]
+                        || self.matrix[i][j] === self.matrix[i][j - 1]) {
+                    gameHasEnded = false;
+                    return gameHasEnded;
+                }
+            }
+        }
+
         return gameHasEnded;
     }
 
