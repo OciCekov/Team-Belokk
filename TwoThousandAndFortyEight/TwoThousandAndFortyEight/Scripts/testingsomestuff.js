@@ -860,6 +860,23 @@ function visualizeScoreBoard() {
     function visualizeScore() {
         var currentScore = score;
         var i = 0;
+        var colors = [
+            '#DDD',
+            '#CCC',
+            '#BBB',
+            '#AAA',
+            '#999',
+            '#888',
+            '#777',
+            '#666',
+            '#555',
+            '#444',
+            '#333',
+            '#222',
+            '#111',
+            '#000'
+        ];
+
         while (currentScore > 0) {
             var digit = currentScore % 10;
             visualizeDigits(digit, SCORE_POSITION.X + 65 - (i * 15), SCORE_POSITION.Y + 4, '#000');
