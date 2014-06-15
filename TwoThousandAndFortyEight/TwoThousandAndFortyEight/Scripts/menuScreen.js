@@ -1,13 +1,22 @@
 (function () {
-
-    // TODO: Add canvas to the HTML <canvas id="menu-screen"width="500" height="500"> </canvas>
+    //todo  Remove when files merge, whenever I loaded with everything else, it all went to... бе не беше яко :)
+    var BG_COLOR = "#2D4559",
+        BG_BOX_COLOR = '#576A7A',
+        RECT_WIDTH = 105,
+        RECT_HEIGHT = 105,
+        TEXT_OFFSET = 33,
+        STAGE_WIDTH = 500,
+        STAGE_HEIGHT = 500;
+    // todo: Add canvas to the HTML <canvas id="menu-screen "width="500" height="500"> </canvas>
     // It also needs some other things, and some beauty touches.
 
     var canvas = document.getElementById("menu-screen"),
         stage = canvas.getContext("2d");
-    // Probably ugliest way to do this
-    var menuCanvas = document.getElementById('menu-screen').style.backgroundColor = BG_COLOR;
 
+    var $menuCanvas = $('#menu-screen')
+        .css({'background-color': BG_COLOR, 'border-radius': '5px'});
+
+    // todo: Add this to the constants file.
     var DISTANCE = 100;
     var LINE_WIDTH = 10;
     var MENU_TOP_BORDER = 200;
@@ -41,17 +50,70 @@
             stage.lineWidth = LINE_WIDTH;
             stage.fillRect(this.x, this.y, RECT_WIDTH * 0.7, RECT_HEIGHT * 0.7);
             stage.strokeRect(this.x, this.y, RECT_WIDTH * 0.7, RECT_HEIGHT * 0.7);
-        }
+            //TODO: CREATE SOME LINES. OR POINTERS.
+        };
         this.moveUp = function () {
             this.y -= DISTANCE
-        }
+        };
         this.moveDown = function () {
-
             this.y += DISTANCE
+        };
+        this.moveLeft = function () {
+            this.x -= DISTANCE * 2;
         }
     }
 
-    var pointer = new Pointer(350, MENU_TOP_BORDER);
+    function chooseItem() {
+        if (pointer.y === start.y) {
+            console.log('start new game');
+            startNewGame();
+        }
+        if (pointer.y === about.y) {
+            console.log('yep');
+            showAboutWindow();
+        }
+        if (pointer.y === goAway.y) {
+            console.log('Not Cool man, not cool');
+            $menuCanvas.remove();
+            // TODO: stop whatever functions there are, alto, there shouldn't be ani.
+        }
+    }
+
+    function startNewGame() {
+
+        hideMainMenu();
+        // start whatever function you guys like, or you can move hideMain menu options up there
+        // and just refer some func
+    }
+
+    function showAboutWindow() {
+        hideMainMenu();
+        $('.about-us')
+            .fadeIn('duration: 5000')
+            .css({
+                'position': 'absolute',
+                'background-color': BG_COLOR,
+                'border-radius': '5px',
+                'width': STAGE_WIDTH,
+                'height': STAGE_HEIGHT
+            }).append("<p> A story should be in here, but I still don't know it</p>")
+            .css({
+                'color': BG_MENU_TILE_COLOR,
+                'font-family': 'Comic sans ms'
+            });
+    }
+
+    function hideMainMenu() {
+        // Here we can add whatever animation we like
+        $menuCanvas
+            .animate({
+                opacity: 0.25,
+                left: "+=50",
+                height: "toggle"
+            }, 5000);
+           // .remove(); // this fuck's up the animation, need to figure out something.
+    }
+
     document.body.addEventListener('keydown', function (ev) {
 
         ev = ev || window.event;
@@ -70,29 +132,31 @@
                 }
                 break;
             case 37:
-                // left arow
-                // TODO: Create select item;
-                // Has to be something like......
-                // if (pointer.x == menuItem.x){start current menu item, and remove this canvas}
+                pointer.moveLeft();
+                if (pointer.x < 150) {
+                    pointer.x = 350;
+                }
+                chooseItem();
                 break;
         }
-    })
+    });
 
-    var TODO = new MenuItem(50,50,' Welcome? ')
-
-    var start = new MenuItem(50, 200, 'Sart Game');
+    var TODO = new MenuItem(50, 50, ' Welcome? ');
+    var pointer = new Pointer(350, MENU_TOP_BORDER);
+    var start = new MenuItem(50, 200, 'Start Game');
     var about = new MenuItem(50, 300, 'About Us');
     var goAway = new MenuItem(50, 400, 'Leave Us');
 
     function motionTest() {
         stage.clearRect(0, 0, stage.canvas.width, stage.canvas.height);
-        pointer.print(stage)
-        requestAnimationFrame(motionTest);
 
+        requestAnimationFrame(motionTest);
+        pointer.print(stage);
         TODO.printMenuItem(stage);
         start.printMenuItem(stage);
         about.printMenuItem(stage);
         goAway.printMenuItem(stage);
     }
-    motionTest()
+
+    motionTest();
 })();
