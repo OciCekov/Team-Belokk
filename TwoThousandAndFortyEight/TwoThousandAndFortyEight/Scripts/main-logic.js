@@ -69,6 +69,7 @@
                 }
             }
         }
+        return occupationMatrix;
     };
 
     self.setElement = function (elementRow, elementCol, value) {

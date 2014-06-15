@@ -78,27 +78,18 @@ function createBox(bx, by, bwidth, bheight, fillc, bval) {
     return result;
 }
 
-function createGrid() {
-    var cell;
-    var grid = [];
-    var columns = (STAGE_WIDTH / RECT_WIDTH) | 0;
-    var rows = (STAGE_HEIGHT / RECT_HEIGHT) | 0;
-    for (col = 0; col < columns; col++) {
-        for (row = 0; row < rows; row++) {
-            cell = { "col": col, "row": row, value: 0 };
-            grid.push(cell);
-        }
-    }
-    return grid;
-}
-
-function randomCell(grid) {
+function randomCell(occupationMatrix) {
 
     var freeCells = [];
 
-    for (i = 0; i < grid.length; i++) {
-        if (grid[i].value === 0) {
-            freeCells.push(i);
+    for (var i = 0; i < occupationMatrix.length; i++) {
+        for (var j = 0; j < occupationMatrix[i].length; j++) {
+            if (!occupationMatrix[i][j]) {
+                var newFreeCell = {};
+                newFreeCell.row = i;
+                newFreeCell.col = j;
+                freeCells.push(newFreeCell);
+            }
         }
     }
 
@@ -107,15 +98,29 @@ function randomCell(grid) {
     return freeCells[rand];
 }
 
+function generateNewElement(occupationMatrix) {
+    var randCell = randomCell(occupationMatrix);
+    var value = 2;
+    gRow = randCell.row;
+    gCol = randCell.col;
+    var bx = 16 * (gCol + 1) + gCol * RECT_WIDTH;
+    var by = 16 * (gRow + 1) + gRow * RECT_HEIGHT;
+    var box = createBox(bx, by, RECT_WIDTH, RECT_HEIGHT, valueToColor(value), value);
+    box.rect.id = randCell;
+    box.text.id = randCell;
+
+    gameLayer.add(box.rect);
+    gameLayer.add(box.text);
+
+    logic.setElement(gRow, gCol, 1);
+}
+
 //init game stage
 var stage = new Kinetic.Stage({
     container: 'game-container',
     width: STAGE_WIDTH,
     height: STAGE_HEIGHT
 });
-
-//create game grid
-var grid = createGrid();
 
 //add background layer
 var backgroundBox = createBox(0, 0, STAGE_WIDTH, STAGE_HEIGHT, BG_COLOR);
@@ -143,31 +148,13 @@ var logic = new MainLogic(4, 4);
 logic.reset();
 
 for (var j = 0; j < 2; j++) {
-
-    var randCell = randomCell(grid);
-    //alert(randCell);
-    var gRow = grid[randCell].row;
-    var gCol = grid[randCell].col;
-    var value = 2;
-    grid[randCell].value = value;
-    var bx = 16 * (gCol + 1) + gCol * RECT_WIDTH;
-    var by = 16 * (gRow + 1) + gRow * RECT_HEIGHT;
-    var box = createBox(bx, by, RECT_WIDTH, RECT_HEIGHT, valueToColor(value), value);
-    box.rect.id = randCell;
-    box.text.id = randCell;
-
-    gameLayer.add(box.rect);
-    gameLayer.add(box.text);
-
-    logic.setElement(gRow, gCol, 1);
+    generateNewElement(logic.getOccupationMatrix());
 }
 stage.add(gameLayer);
 
 
 //start game loop
 var gameInterval = setInterval(function () { gameLoop() }, 1000);
-
-//var moves = logic.moveUp();
 
 function gameLoop() {
     if (!logic.hasGameEnded()) {
@@ -369,54 +356,13 @@ function executeCommand(command) {
     }
 
     AnimateBoxesMovement(command, moves);
+	
+	if (logic.hasGameEnded())	{
+		alert("gameOVER");
+	} else {
+	    generateNewElement(logic.getOccupationMatrix());
+	}
 }
-
-/*function moveBoxesUpward(moves) {
-    if (!moves) return;
-
-    var anim = new Kinetic.Animation(function (frame) {
-        for (var i = 0; i < moves.length; i++) {
-            for (var j = 0; j < gameLayer.children.length - 1; j += 2) {
-
-                // find element to move
-                var boxObj = gameLayer.children[j];
-                var textObj = gameLayer.children[j + 1];
-                boxId = boxObj.id;
-                if (moves[i].first.row === grid[boxId].row &&
-                        moves[i].first.col === grid[boxId].col) {
-                    boxObj.attrs.y = (16 * (moves[i].result.row + 1)) + (moves[i].result.row * RECT_HEIGHT)
-                    textObj.attrs.y = boxObj.attrs.y + TEXT_OFFSET;
-                }
-                
-                //var boxObj = gameLayer.children[i];
-                //var textObj = gameLayer.children[i + 1];
-                //if (boxObj.attrs.y > 16 + ANIMATION_STEP_IN_PIXELS) {
-                //    boxObj.attrs.y -= ANIMATION_STEP_IN_PIXELS;
-                //    textObj.attrs.y -= ANIMATION_STEP_IN_PIXELS;
-                //}
-                //else {
-                //    boxObj.attrs.y = 16;
-                //    textObj.attrs.y = 49;
-                //}
-            }
-        }
-        
-    }, gameLayer);
-
-    anim.start();
-    anim.stop();
-
-    //mergeBoxes();
-}
-*/
-/*function move(where) {
-
-}*/
-
-//add layer
-/*var layer = new Kinetic.Layer();
-layer.add(rectangle);
-stage.add(layer);*/
 
 //key events
 window.onload = function () {
