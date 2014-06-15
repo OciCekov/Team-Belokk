@@ -205,6 +205,8 @@ function moveObjFrame(obj, fromRow, fromCol, toRow, toCol) {
     }
 }
 
+var interupt = false;
+
 function AnimateBoxesMovement(command, moves) {
 
     var stopAnim = false;
@@ -212,7 +214,8 @@ function AnimateBoxesMovement(command, moves) {
     //console.log(moves);
     var movementAnim = new Kinetic.Animation(function (frame) {
         var animationHasToEnd = true;		
-		var finshedElements = moves.length;
+        var finshedElements = moves.length;
+        interupt = true;
 		
         for (var i = 0; i < moves.length; i++) {
 
@@ -323,7 +326,8 @@ function AnimateBoxesMovement(command, moves) {
 
             //output some stuff for debuging
             //console.log('- - -');            
-			//alert("DFVD");
+            //alert("DFVD");
+            interupt = false;
             movementAnim.stop();
         }
 
@@ -368,6 +372,12 @@ function mergeElements(row, col, value) {
 
 function executeCommand(command) {
     var moves;
+
+    if (interupt == true)
+    {
+        //console.log('interupted...');
+        return;
+    }
 
     switch (command) {
         case 'UP':
