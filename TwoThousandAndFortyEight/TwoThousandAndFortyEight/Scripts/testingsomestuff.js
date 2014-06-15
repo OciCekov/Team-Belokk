@@ -517,10 +517,14 @@ function moveObjFrame(obj, fromRow, fromCol, toRow, toCol) {
 }
 
 
+var interupt=false;
+
 function playTestingAnimation(animations) {
-
-    console.log(animations);
-
+	
+	interupt=true;
+	console.log(interupt);
+	console.log(animations);
+	
     for (var ci = 0; ci < gameLayer.children.length; ci++) {
 
         var element = gameLayer.children[ci];
@@ -594,6 +598,7 @@ function playTestingAnimation(animations) {
         }
 
         if (animationHasEnded) {
+			interupt=false;
             anim.stop();
         }
     }, gameLayer);
@@ -660,15 +665,27 @@ function moveBoxesInDir(dir) {
             gameLayer.add(grid[i].obj.text);
         }
     }
-    addRandomCellToGameLayer();
-    //stage.add(gameLayer);
+    
+	/*if(animations.length>0)
+	{
+		addRandomCellToGameLayer();
+	}*/
+    
+	addRandomCellToGameLayer();
+	
+	//stage.add(gameLayer);
     updateGameLayer(animations);
 }
 
 //input handling
 $(document).ready(function () {
     $(document).keyup(function (e) {
-
+		
+		if(interupt==true)
+		{
+			return;
+		}
+		
         switch (e.keyCode) {
 
             case UP_ARROW:
