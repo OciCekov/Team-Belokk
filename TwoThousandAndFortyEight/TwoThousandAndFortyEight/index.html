@@ -1,27 +1,37 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+	
 	<title>2048</title>
-    <script src="Scripts/kinetic-v4.4.3.js"></script>
-    <script src="Scripts/jquery-2.1.1.min.js"></script>
-    <script src="Scripts/raphael-min.js"></script>
+	<meta charset="UTF-8"/>
+	
+    <script type="text/javascript" src="Scripts/kinetic-v4.4.3.js"></script>
+    <script type="text/javascript" src="Scripts/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="Scripts/raphael-min.js"></script>
+	
     <link href="Styles/web%20fonts/clearsans_bold_macroman/stylesheet.css" rel="stylesheet" />
     <link href="Styles/web%20fonts/clearsans_regular_macroman/stylesheet.css" rel="stylesheet" />
-    <style>
+    
+	<style type="text/css">
         body {
             text-align: center;
         }
     </style>
+	
 </head>
 	<body>
-        <div id="score-container"></div>
+        
+		<div id="score-container"></div>
 		<div id="game-container"></div>
-        <script src="Scripts/main-logic.js"></script>
-        <script src="Scripts/score-board.js"></script>
-        <script src="Scripts/scripts.js"></script>
-        <script>
+		
+        <script type="text/javascript" src="Scripts/main-logic.js"></script>
+        <script type="text/javascript" src="Scripts/score-board.js"></script>
+        <script type="text/javascript" src="Scripts/game.js"></script>
+        
+		<script>
             $('canvas').css('margin-left', '-250px');
         </script>
+				
         <button id="new-game">New game</button>
 	</body>
 </html>

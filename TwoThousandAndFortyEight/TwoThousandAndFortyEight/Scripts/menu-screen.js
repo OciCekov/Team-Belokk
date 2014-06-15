@@ -98,12 +98,13 @@
     function showAboutWindow() {
         hideMainMenu();
         setTimeout(function () {
-            $('.about-us')
+            $('#about-us')
                 .fadeIn('duration: 5000')
-                .css({
-                    'position': 'absolute',
+                .css({                     
                     'background-color': BG_COLOR,
                     'border-radius': '5px',
+					'margin-left':'auto',
+					'margin-right':'auto',
                     'width': STAGE_WIDTH,
                     'height': STAGE_HEIGHT
                 }).append("<p> A story should be in here, but I still don't know it</p>")
