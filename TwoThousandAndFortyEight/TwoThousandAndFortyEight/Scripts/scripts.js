@@ -11,7 +11,7 @@ var RECT_WIDTH = 105;
 var RECT_HEIGHT = 105;
 
 var BG_COLOR = "#2D4559";
-var BG_BOX_COLOR = "576A7A";
+var BG_BOX_COLOR = "#576A7A";
 var ACTIVE_BOX_COLOR = "#000000";
 var ACTIVE_FONT_COLOR = "#FFFFFF";
 var TEXT_OFFSET = 33;
@@ -106,8 +106,6 @@ function generateNewElement(occupationMatrix) {
     var bx = 16 * (gCol + 1) + gCol * RECT_WIDTH;
     var by = 16 * (gRow + 1) + gRow * RECT_HEIGHT;
     var box = createBox(bx, by, RECT_WIDTH, RECT_HEIGHT, valueToColor(value), value);
-    box.rect.id = randCell;
-    box.text.id = randCell;
 
     gameLayer.add(box.rect);
     gameLayer.add(box.text);
@@ -207,6 +205,8 @@ function moveObjFrame(obj, fromRow, fromCol, toRow, toCol) {
     }
 }
 
+var interupt = false;
+
 function AnimateBoxesMovement(command, moves) {
 
     var stopAnim = false;
@@ -214,7 +214,8 @@ function AnimateBoxesMovement(command, moves) {
     //console.log(moves);
     var movementAnim = new Kinetic.Animation(function (frame) {
         var animationHasToEnd = true;		
-		var finshedElements = moves.length;
+        var finshedElements = moves.length;
+        interupt = true;
 		
         for (var i = 0; i < moves.length; i++) {
 
@@ -262,7 +263,9 @@ function AnimateBoxesMovement(command, moves) {
 					rectGraphic.attrs.id = 'a-' + newx + '-' + newy;
 					textGraphic.attrs.id = 'at-' + newx + '-' + newy;
 					move.first = null;
-					if (!move.second) finshedElements--;
+					if (!move.second) {
+					    finshedElements--;
+					}
 				}
 				else
 				{
@@ -308,6 +311,9 @@ function AnimateBoxesMovement(command, moves) {
 					textGraphic.attrs.id = 'at-' + newx + '-' + newy;
 					move.second = null;
 					finshedElements--;
+
+				    //merge
+					mergeElements(newrow, newcol, Math.pow(2, move.result.value));
 				}
 				else
 				{
@@ -320,18 +326,58 @@ function AnimateBoxesMovement(command, moves) {
 
             //output some stuff for debuging
             //console.log('- - -');            
-			//alert("DFVD");
+            //alert("DFVD");
+            interupt = false;
             movementAnim.stop();
         }
 
     }, gameLayer);
 
     movementAnim.start();
+}
 
+function mergeElements(row, col, value) {
+    var scol = col;
+    var srow = row;
+
+    var sx = 16 * (scol + 1) + scol * RECT_WIDTH;
+    var sy = 16 * (srow + 1) + srow * RECT_HEIGHT;
+
+    var rectid = 'a-' + sx + '-' + sy;
+    var textid = 'at-' + sx + '-' + sy;
+
+    var rectGraphic = gameLayer.children.filter(function (obj) {
+        return obj.attrs.id === rectid;
+    });
+
+    for (var i = 0; i < rectGraphic.length; i++) {
+        rectGraphic[i].remove();
+    }
+
+    var textGraphic = gameLayer.children.filter(function (obj) {
+        return obj.attrs.id === textid;
+    });
+
+    for (var i = 0; i < textGraphic.length; i++) {
+        textGraphic[i].remove();
+    }
+
+    var box = createBox(sx, sy, RECT_WIDTH, RECT_HEIGHT, valueToColor(value), value);
+
+    gameLayer.add(box.rect);
+    gameLayer.add(box.text);
+
+    stage.add(gameLayer);
 }
 
 function executeCommand(command) {
     var moves;
+
+    if (interupt == true)
+    {
+        //console.log('interupted...');
+        return;
+    }
 
     switch (command) {
         case 'UP':
@@ -360,7 +406,7 @@ function executeCommand(command) {
 	if (logic.hasGameEnded())	{
 		alert("gameOVER");
 	} else {
-	    generateNewElement(logic.getOccupationMatrix());
+	    if (moves.length != 0) generateNewElement(logic.getOccupationMatrix());
 	}
 }
 
