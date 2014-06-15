@@ -82,6 +82,7 @@
     self.matrix = self._createMatrix(fieldSizeX, fieldSizeY);
 
     self.reset = function () {
+		//self.score=0;
         for (var i = 0; i < self.matrix.length; i++) {
             for (var j = 0; j < self.matrix[i].length; j++) {
                 self.matrix[i][j] = 0;

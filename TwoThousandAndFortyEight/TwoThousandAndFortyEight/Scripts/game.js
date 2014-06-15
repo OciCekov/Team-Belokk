@@ -118,8 +118,8 @@ function generateNewElement(occupationMatrix) {
     logic.setElement(gRow, gCol, 1);
 }
 
+//init score board
 var scoreBoard = new ScoreBoard();
-
 var paper = Raphael('score-container', 500, 50);
 
 //init game stage
@@ -129,25 +129,31 @@ var stage = new Kinetic.Stage({
     height: STAGE_HEIGHT
 });
 
-//add background layer
-var backgroundBox = createBox(0, 0, STAGE_WIDTH, STAGE_HEIGHT, BG_COLOR);
-var backgroundLayer = new Kinetic.Layer();
-backgroundLayer.add(backgroundBox);
+//draw background layer
+function drawBackgroundLayer()
+{
+	var backgroundBox = createBox(0, 0, STAGE_WIDTH, STAGE_HEIGHT, BG_COLOR);
+	var backgroundLayer = new Kinetic.Layer();
+	backgroundLayer.add(backgroundBox);
 
-var columns = (STAGE_WIDTH / RECT_WIDTH) | 0;
-var rows = (STAGE_HEIGHT / RECT_HEIGHT) | 0;
-for (col = 0; col < columns; col++) {
-    for (row = 0; row < rows; row++) {
-        var cx = 16 * (col + 1) + col * RECT_WIDTH;
-        var cy = 16 * (row + 1) + row * RECT_HEIGHT;
-        var backgroundSBox = createBox(cx, cy, RECT_WIDTH, RECT_HEIGHT, BG_BOX_COLOR);
-        backgroundLayer.add(backgroundSBox);
-    }
+	var columns = (STAGE_WIDTH / RECT_WIDTH) | 0;
+	var rows = (STAGE_HEIGHT / RECT_HEIGHT) | 0;
+	for (col = 0; col < columns; col++) {
+		for (row = 0; row < rows; row++) {
+			var cx = 16 * (col + 1) + col * RECT_WIDTH;
+			var cy = 16 * (row + 1) + row * RECT_HEIGHT;
+			var backgroundSBox = createBox(cx, cy, RECT_WIDTH, RECT_HEIGHT, BG_BOX_COLOR);
+			backgroundLayer.add(backgroundSBox);
+		}
+	}
+
+	stage.add(backgroundLayer);
 }
 
-stage.add(backgroundLayer);
+//draw background
+drawBackgroundLayer();
 
-//init
+//init game layer
 var gameLayer = new Kinetic.Layer();
 
 //init main logic
@@ -155,9 +161,10 @@ var logic = new MainLogic(4, 4, 11);
 var score = logic.score;
 var highScore = 0;
 
-function gameInit()
+//init game function
+function initGame()
 {
-    logic.reset();
+    logic.reset();	
     gameLayer.removeChildren();
     for (var j = 0; j < 2; j++) {
         generateNewElement(logic.getOccupationMatrix());
@@ -165,7 +172,12 @@ function gameInit()
     stage.add(gameLayer);
 }
 
-gameInit();
+//init game
+initGame();
+
+//init score board
+scoreBoard.initScore();
+scoreBoard.reset();
 
 //start game loop
 var gameInterval = setInterval(function () { gameLoop() }, 1000);
@@ -177,6 +189,8 @@ function gameLoop() {
         //console.log(commandCallHeap);
     }
 }
+
+//animation functions
 
 function moveObjFrame(obj, fromRow, fromCol, toRow, toCol) {
 
@@ -217,7 +231,7 @@ function moveObjFrame(obj, fromRow, fromCol, toRow, toCol) {
 
 var interupt = false;
 
-function AnimateBoxesMovement(command, moves) {
+function animateBoxesMovement(command, moves) {
 
     var stopAnim = false;
 	
@@ -359,6 +373,7 @@ function AnimateBoxesMovement(command, moves) {
     movementAnim.start();
 }
 
+
 function mergeElements(row, col, value) {
     var scol = col;
     var srow = row;
@@ -393,6 +408,7 @@ function mergeElements(row, col, value) {
     stage.add(gameLayer);
 }
 
+//input control function
 function executeCommand(command) {
     var moves;
 
@@ -424,11 +440,14 @@ function executeCommand(command) {
             break;
     }
 
-    AnimateBoxesMovement(command, moves);
+    animateBoxesMovement(command, moves);
 
     score = logic.score;
     scoreBoard.visualize();
 }
+
+
+//game state functions
 
 function gameOver() {
     clearInterval(gameInterval);
@@ -460,13 +479,10 @@ window.onload = function () {
                 commandCallHeap.push('LEFT');
                 break;
         }
-    });
-
-    scoreBoard.initScore();
-    scoreBoard.reset();
+    });	
 
     $('#new-game').on('click', function () {
         scoreBoard.reset();
-        gameInit();
+		initGame();
     });
 }
