@@ -888,16 +888,15 @@ function ScoreBoard() {
             i++;
         }
 
-        if (score > highScore) {
-            var currentHighScore = score;
-            var i = 0;
-            while (currentHighScore > 0) {
-                visualizeDigits(8, HIGH_SCORE_POSITION.X + 65 - (i * 15), HIGH_SCORE_POSITION.Y + 4, '#DDD');
-                var digit = currentHighScore % 10;
-                visualizeDigits(digit, HIGH_SCORE_POSITION.X + 65 - (i * 15), HIGH_SCORE_POSITION.Y + 4, '#000');
-                currentHighScore = parseInt(currentHighScore / 10);
-                i++;
-            }
+        var currentHighScore = score;
+        i = 0;
+
+        while (currentHighScore > 0) {
+            visualizeDigits(8, HIGH_SCORE_POSITION.X + 65 - (i * 15), HIGH_SCORE_POSITION.Y + 4, '#DDD');
+            var digit = currentHighScore % 10;
+            visualizeDigits(digit, HIGH_SCORE_POSITION.X + 65 - (i * 15), HIGH_SCORE_POSITION.Y + 4, '#000');
+            currentHighScore = parseInt(currentHighScore / 10);
+            i++;
         }
     }
 
