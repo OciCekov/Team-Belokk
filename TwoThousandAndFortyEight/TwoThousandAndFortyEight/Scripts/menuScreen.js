@@ -89,7 +89,8 @@
 
     function startNewGame() {
 
-        hideMainMenu();
+        //hideMainMenu();
+		window.location.href='index.html';
         // start whatever function you guys like, or you can move hideMain menu options up there
         // and just refer some func
     }
