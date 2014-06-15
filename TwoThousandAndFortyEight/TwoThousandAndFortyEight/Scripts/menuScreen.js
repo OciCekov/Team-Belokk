@@ -51,6 +51,13 @@
             stage.lineWidth = LINE_WIDTH;
             stage.fillRect(this.x, this.y, RECT_WIDTH * 0.7, RECT_HEIGHT * 0.7);
             stage.strokeRect(this.x, this.y, RECT_WIDTH * 0.7, RECT_HEIGHT * 0.7);
+            stage.strokeWidth = 5;
+            stage.strokeStyle = 'white';
+            stage.beginPath();
+            stage.moveTo(this.x+56, this.y+20);
+            stage.lineTo(this.x +25, this.y +35);
+            stage.lineTo(this.x+56 ,this.y+55);
+            stage.stroke();
             //TODO: CREATE SOME LINES. OR POINTERS.
         };
         this.moveUp = function () {
