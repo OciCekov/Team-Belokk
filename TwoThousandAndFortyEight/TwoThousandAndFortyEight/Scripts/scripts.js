@@ -396,7 +396,7 @@ function executeCommand(command) {
 	if (logic.hasGameEnded())	{
 		alert("gameOVER");
 	} else {
-	    if (moves) generateNewElement(logic.getOccupationMatrix());
+	    if (moves.length != 0) generateNewElement(logic.getOccupationMatrix());
 	}
 }
 
