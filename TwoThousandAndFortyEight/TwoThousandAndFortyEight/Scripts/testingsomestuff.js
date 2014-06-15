@@ -185,74 +185,6 @@ highScoreRect.attr({
     fill: '#EEE'
 })
 
-//start game loop
-//var gameInterval = setInterval(function () { gameLoop() }, 1000);
-
-//var moves = logic.moveUp();
-
-/*function gameLoop() {
-    if (checkGameStatus()) {
-        //moveBoxesUpward(moves);
-    }
-    else {
-        clearInterval(gameInterval);//Stop calling gameLoop()
-        alert('Game Over!');
-    }
-}*/
-
-/*function checkGameStatus() {
-    return true;
-}
-*/
-/*
-function moveBoxesUpward(moves) {
-    if (!moves) return;
-
-    var anim = new Kinetic.Animation(function (frame) {
-        for (var i = 0; i < moves.length; i++) {
-            for (var j = 0; j < gameLayer.children.length - 1; j += 2) {
-
-                // find element to move
-                var boxObj = gameLayer.children[j];
-                var textObj = gameLayer.children[j + 1];
-                boxId = boxObj.id;
-                if (moves[i].first.row == grid[boxId].row &&
-                    moves[i].first.col == grid[boxId].col) {
-                    boxObj.attrs.y = (16 * (moves[i].result.row + 1)) + (moves[i].result.row * RECT_HEIGHT)
-                    textObj.attrs.y = boxObj.attrs.y + 33;
-                }
-
-                //var boxObj = gameLayer.children[i];
-                //var textObj = gameLayer.children[i + 1];
-                //if (boxObj.attrs.y > 16 + ANIMATION_STEP_IN_PIXELS) {
-                //    boxObj.attrs.y -= ANIMATION_STEP_IN_PIXELS;
-                //    textObj.attrs.y -= ANIMATION_STEP_IN_PIXELS;
-                //}
-                //else {
-                //    boxObj.attrs.y = 16;
-                //    textObj.attrs.y = 49;
-                //}
-            }
-        }
-
-    }, gameLayer);
-
-    anim.start();
-    anim.stop();
-}*/
-
-/*function move(where) {
-
-}*/
-
-//add layer
-/*var layer = new Kinetic.Layer();
-layer.add(rectangle);
-stage.add(layer);*/
-
-//var rectangle=stage.rect(
-
-
 //gets a row from the grid
 function getRowFromGrid(dir, rowi) {
     var rRow = [];
@@ -274,7 +206,6 @@ function getRowFromGrid(dir, rowi) {
 
     return rRow;
 }
-
 
 function getAllRows(dir) {
 
@@ -359,7 +290,7 @@ function calculateRowSums(row, dir) {
         if (cEl !== null && nEl !== null) {
             if ((cEl.rect.attrs.value | 0) === (nEl.rect.attrs.value | 0)) {
 
-                var newValue=(row[elInd].obj.rect.attrs.value | 0) * 2;
+                var newValue = (row[elInd].obj.rect.attrs.value | 0) * 2;
                 row[elInd].obj.rect.attrs.value = newValue;
                 moveScore += newValue;
                 birthId++;
@@ -409,7 +340,7 @@ function addRandomCellToGameLayer() {
     var bx = 16 * (gCol + 1) + gCol * RECT_WIDTH;
     var by = 16 * (gRow + 1) + gRow * RECT_HEIGHT;
     birthId++;
-    var box = createBox(bx, by, RECT_WIDTH, RECT_HEIGHT, valueToColor(value), value,'_'+birthId);
+    var box = createBox(bx, by, RECT_WIDTH, RECT_HEIGHT, valueToColor(value), value, '_' + birthId);
 
     grid[randCell].obj = box;
 
@@ -512,21 +443,20 @@ function moveObjFrame(obj, fromRow, fromCol, toRow, toCol) {
         return false;
     }
 
-    if ((Math.abs(obj.attrs.x - to.x) < ANIMATION_STEP_IN_PIXELS) && (Math.abs(obj.attrs.y - to.y) < ANIMATION_STEP_IN_PIXELS))
-    {
+    if ((Math.abs(obj.attrs.x - to.x) < ANIMATION_STEP_IN_PIXELS) && (Math.abs(obj.attrs.y - to.y) < ANIMATION_STEP_IN_PIXELS)) {
         return true;
     }
 }
 
 
-var interupt=false;
+var interupt = false;
 
 function playTestingAnimation(animations) {
-	
-	interupt=true;
-	console.log(interupt);
-	console.log(animations);
-	
+
+    interupt = true;
+    //console.log(interupt);
+    //console.log(animations);
+
     for (var ci = 0; ci < gameLayer.children.length; ci++) {
 
         var element = gameLayer.children[ci];
@@ -551,36 +481,58 @@ function playTestingAnimation(animations) {
         }
     }
 
-    var anim = new Kinetic.Animation(function (frame) {
-        var animationHasEnded = true;
-        //updateGameLayer();       
-        for (var ci = 0; ci < gameLayer.children.length; ci++) {
+    var lastTime;
+    var frameDelay = 16.66;
 
-            var element = gameLayer.children[ci];
-            var elementBId = element.attrs.birthid;
-            //move objects that are present in the current and the earlier grids     
-            if (animations !== undefined) {
-                if (animations[elementBId] !== undefined) {
-                    var assocAnimation = animations[elementBId];
-                    if (assocAnimation.type === "move") {
+    var anim = new Kinetic.Animation(function (frame) {
+
+        var time = frame.time
+
+        if (!lastTime) {
+            lastTime = time;
+        }
+
+        var elapsed = time - lastTime;
+
+        if (elapsed >= frameDelay) {
+            var animationHasEnded = true;
+            //updateGameLayer();       
+            for (var ci = 0; ci < gameLayer.children.length; ci++) {
+
+                var element = gameLayer.children[ci];
+                var elementBId = element.attrs.birthid;
+                //move objects that are present in the current and the earlier grids     
+                if (animations !== undefined) {
+                    if (animations[elementBId] !== undefined) {
+                        var assocAnimation = animations[elementBId];
+                        if (assocAnimation.type === "move") {
 
                             var moved = moveObjFrame(element, assocAnimation.oldrow, assocAnimation.oldcol, assocAnimation.newrow, assocAnimation.newcol);
                             if (!moved) {
                                 animationHasEnded = false;
                             }
-                    }
-                    else {
-                        
+                        }
+                        else {
+
                             //fade in new elements
                             var fadedIn = fadeInObjFrame(element);
 
                             if (!fadedIn) {
                                 animationHasEnded = false;
-                            }                        
+                            }
+                        }
+                    }
+                    else {
+
+                        //fade in new elements
+                        var fadedIn = fadeInObjFrame(element);
+
+                        if (!fadedIn) {
+                            animationHasEnded = false;
+                        }
                     }
                 }
                 else {
-
                     //fade in new elements
                     var fadedIn = fadeInObjFrame(element);
 
@@ -589,20 +541,13 @@ function playTestingAnimation(animations) {
                     }
                 }
             }
-            else {
-                    //fade in new elements
-                    var fadedIn = fadeInObjFrame(element);
 
-                    if (!fadedIn) {
-                        animationHasEnded = false;
-                    }                
+            if (animationHasEnded) {
+                interupt = false;
+                anim.stop();
             }
         }
-
-        if (animationHasEnded) {
-			interupt=false;
-            anim.stop();
-        }
+        lastTime = time;
     }, gameLayer);
 
     anim.start();
@@ -671,32 +616,31 @@ function moveBoxesInDir(dir) {
             gameLayer.add(grid[i].obj.text);
         }
     }
-    
-	/*if(animations.length>0)
+
+    /*if(animations.length>0)
 	{
 		addRandomCellToGameLayer();
 	}*/
-    
-	addRandomCellToGameLayer();
-	
-	//stage.add(gameLayer);
-	updateGameLayer(animations);
+
+    addRandomCellToGameLayer();
+
+    //stage.add(gameLayer);
+    updateGameLayer(animations);
     //update score
-	//console.log();
-	scoreBoard.scoreAddition(moveScore);
-	scoreBoard.visualize();
+    //console.log();
+    scoreBoard.scoreAddition(moveScore);
+    scoreBoard.visualize();
 }
 var scoreBoard = new ScoreBoard();
 
 //input handling
 $(document).ready(function () {
     $(document).keyup(function (e) {
-		
-		if(interupt==true)
-		{
-			return;
-		}
-		
+
+        if (interupt == true) {
+            return;
+        }
+
         switch (e.keyCode) {
 
             case UP_ARROW:
