@@ -74,7 +74,7 @@ function createBox(bx, by, bwidth, bheight, fillc, bval) {
             align: "center",
             text: bval,
             fontSize: 48,
-            fontFamily: "Clear Sans",
+            fontFamily: "clear_sansbold",
             fontStyle: "bold",
             fill: ACTIVE_FONT_COLOR
         })
@@ -180,7 +180,7 @@ scoreBoard.initScore();
 scoreBoard.reset();
 
 //start game loop
-var gameInterval = setInterval(function () { gameLoop() }, 1000);
+var gameInterval = setInterval(function () { gameLoop() }, 200);
 
 function gameLoop() {
     while (commandCallHeap.length !== 0) {

@@ -111,7 +111,7 @@
                 }).append("<p> A story should be in here, but I still don't know it</p>")
                 .css({
                     'color': BG_MENU_TILE_COLOR,
-                    'font-family': 'Comic sans ms'
+                    'font-family': 'clear_sansregular'
                 })
         }, ANIMATION_DELAY)
     }

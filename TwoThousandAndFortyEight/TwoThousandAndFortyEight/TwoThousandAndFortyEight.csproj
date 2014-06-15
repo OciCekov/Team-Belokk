@@ -59,11 +59,14 @@
   <ItemGroup>
     <Content Include="index.html" />
     <None Include="Scripts\jquery-2.1.1.intellisense.js" />
+    <Content Include="main-menu.html" />
+    <Content Include="Scripts\game.js" />
     <Content Include="Scripts\jquery-2.1.1.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\kinetic-v4.4.3.js" />
     <Content Include="Scripts\kinetic-v4.4.3.min.js" />
     <Content Include="Scripts\main-logic.js" />
+    <Content Include="Scripts\menu-screen.js" />
     <Content Include="Scripts\raphael-min.js" />
     <Content Include="Scripts\raphael.js" />
     <Content Include="Scripts\scripts.js" />
