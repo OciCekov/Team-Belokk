@@ -89,8 +89,7 @@ function createBox(bx, by, bwidth, bheight, fillc, bval, birthid) {
             align: "center",
             text: bval,
             fontSize: 48,
-            fontFamily: "Clear Sans",
-            fontStyle: "bold",
+            fontFamily: 'clear_sansbold',
             fill: ACTIVE_FONT_COLOR,
             opacity: 100
         })
@@ -837,8 +836,8 @@ function visualizeScoreBoard() {
     }
 
     function initScoreBoard() {
-        paper.text(SCORE_POSITION.X - 50, SCORE_POSITION.Y + 15, 'Score').attr({ 'font-size': 25, 'font-family': 'Clear Sans'});
-        paper.text(HIGH_SCORE_POSITION.X - 75, HIGH_SCORE_POSITION.Y + 15, 'High score').attr({ 'font-size': 25, 'font-family': 'Clear Sans' });
+        paper.text(SCORE_POSITION.X - 50, SCORE_POSITION.Y + 15, 'Score').attr({ 'font-size': 25, 'font-family': 'clear_sansregular' });
+        paper.text(HIGH_SCORE_POSITION.X - 75, HIGH_SCORE_POSITION.Y + 15, 'High score').attr({ 'font-size': 25, 'font-family': 'clear_sansregular' });
         for (var i = 0; i < 5; i++) {
             visualizeDigits(8, SCORE_POSITION.X + 65 - (i * 15), SCORE_POSITION.Y + 4, '#DDD');
             visualizeDigits(8, HIGH_SCORE_POSITION.X + 65 - (i * 15), HIGH_SCORE_POSITION.Y + 4, '#DDD');
