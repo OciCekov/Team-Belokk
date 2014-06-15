@@ -142,7 +142,7 @@ stage.add(backgroundLayer);
 var gameLayer = new Kinetic.Layer();
 
 //init main logic
-var logic = new MainLogic(4, 4);
+var logic = new MainLogic(4, 4, 11);
 logic.reset();
 
 for (var j = 0; j < 2; j++) {
@@ -155,17 +155,11 @@ stage.add(gameLayer);
 var gameInterval = setInterval(function () { gameLoop() }, 1000);
 
 function gameLoop() {
-    if (!logic.hasGameEnded()) {
         while (commandCallHeap.length !== 0) {
             executeCommand(commandCallHeap[0]);
             commandCallHeap.splice(0, 1);
             //console.log(commandCallHeap);
         }
-    }
-    else {
-        clearInterval(gameInterval);//Stop calling gameLoop()
-        alert('Game Over!');
-    }
 }
 
 function moveObjFrame(obj, fromRow, fromCol, toRow, toCol) {
@@ -214,13 +208,12 @@ function AnimateBoxesMovement(command, moves) {
     //console.log(moves);
     var movementAnim = new Kinetic.Animation(function (frame) {
         var animationHasToEnd = true;		
-        var finshedElements = moves.length;
         interupt = true;
 		
         for (var i = 0; i < moves.length; i++) {
 
             var move = moves[i];
-			
+
 			if (move.first === null && move.second === null)
 			{
 				continue;
@@ -264,7 +257,7 @@ function AnimateBoxesMovement(command, moves) {
 					textGraphic.attrs.id = 'at-' + newx + '-' + newy;
 					move.first = null;
 					if (!move.second) {
-					    finshedElements--;
+					    //finshedElements--;
 					}
 				}
 				else
@@ -310,7 +303,7 @@ function AnimateBoxesMovement(command, moves) {
 					rectGraphic.attrs.id = 'a-' + newx + '-' + newy;
 					textGraphic.attrs.id = 'at-' + newx + '-' + newy;
 					move.second = null;
-					finshedElements--;
+					//finshedElements--;
 
 				    //merge
 					mergeElements(newrow, newcol, Math.pow(2, move.result.value));
@@ -322,13 +315,27 @@ function AnimateBoxesMovement(command, moves) {
 			}
         }
 
-        if (finshedElements == 0) {
+        if (animationHasToEnd) {
 
             //output some stuff for debuging
             //console.log('- - -');            
             //alert("DFVD");
             interupt = false;
             movementAnim.stop();
+
+            if (logic.isGameWon()) {
+                gameWon();
+            }
+
+            if (logic.hasGameEnded()) {
+                gameOver();
+            } else {
+                if (moves.length != 0) generateNewElement(logic.getOccupationMatrix());
+
+                if (logic.hasGameEnded()) {
+                    gameOver();
+                }
+            }
         }
 
     }, gameLayer);
@@ -402,12 +409,16 @@ function executeCommand(command) {
     }
 
     AnimateBoxesMovement(command, moves);
-	
-	if (logic.hasGameEnded())	{
-		alert("gameOVER");
-	} else {
-	    if (moves.length != 0) generateNewElement(logic.getOccupationMatrix());
-	}
+}
+
+function gameOver() {
+    clearInterval(gameInterval);
+    alert("gameOVER");
+}
+
+function gameWon() {
+    clearInterval(gameInterval);
+    alert("YESSSS!!!!");
 }
 
 //key events
