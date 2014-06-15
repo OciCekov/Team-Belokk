@@ -133,7 +133,7 @@
                 //var isMerge = false;
                 if (col !== 0) {
                     var prevEqualElementCol = col - 1;
-                    while (prevEqualElementCol >= 0) {
+                    while (prevEqualElementCol > 0) {
                         if (self.matrix[row][prevEqualElementCol] === 0) {
                             prevEqualElementCol--;
                             continue;
@@ -200,7 +200,7 @@
                 //var isMerge = false;
                 if (col !== self.matrix[row].length - 1) {
                     var prevEqualElementCol = col + 1;
-                    while (prevEqualElementCol <= self.matrix[row].length - 1) {
+                    while (prevEqualElementCol < self.matrix[row].length - 1) {
                         if (self.matrix[row][prevEqualElementCol] === 0) {
                             prevEqualElementCol++;
                             continue;
@@ -268,11 +268,8 @@
                 //var isMerge = false;
                 if (row !== self.matrix.length - 1) {
                     var prevEqualElementRow = row + 1;
-                    while (prevEqualElementRow <= self.matrix.length - 1) {
+                    while (prevEqualElementRow < self.matrix.length - 1) {
                         if (self.matrix[prevEqualElementRow][col] === 0) {
-                            if (prevEqualElementRow + 1 >= self.matrix.length) {
-                                break;
-                            }
                             prevEqualElementRow++;
                             continue;
                         } else {
@@ -338,7 +335,7 @@
                 //var isMerge = false;
                 if (row !== 0) {
                     var prevEqualElementRow = row - 1;
-                    while (prevEqualElementRow >= 0) {
+                    while (prevEqualElementRow > 0) {
                         if (self.matrix[prevEqualElementRow][col] === 0) {
                             prevEqualElementRow--;
                             continue;
