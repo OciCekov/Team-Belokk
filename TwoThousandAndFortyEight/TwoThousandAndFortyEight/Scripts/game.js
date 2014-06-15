@@ -74,7 +74,7 @@ function createBox(bx, by, bwidth, bheight, fillc, bval) {
             align: "center",
             text: bval,
             fontSize: 48,
-            fontFamily: "Clear Sans",
+            fontFamily: "clear_sansbold",
             fontStyle: "bold",
             fill: ACTIVE_FONT_COLOR
         })
